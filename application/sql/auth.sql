@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `appadmin` tinyint(1) NOT NULL DEFAULT '0',
   `activated` tinyint(1) NOT NULL DEFAULT '1',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `ban_reason` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `new_password_key` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `new_password_requested` datetime DEFAULT NULL,

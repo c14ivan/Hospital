@@ -137,7 +137,6 @@ class Users extends CI_Model
 		}
 		return NULL;
 	}
-
 	/**
 	 * Activate user if activation key is valid.
 	 * Can be called for not activated users only.
@@ -194,9 +193,10 @@ class Users extends CI_Model
 	function delete_user($user_id)
 	{
 		$this->db->where('id', $user_id);
-		$this->db->delete($this->table_name);
+		$data=array('deleted'=>1);
+		$this->db->update($this->table_name,$data);
 		if ($this->db->affected_rows() > 0) {
-			$this->delete_profile($user_id);
+			//$this->delete_profile($user_id);
 			return TRUE;
 		}
 		return FALSE;

@@ -1,1 +1,3 @@
 <?php
+
+$lang['rol']="Rol";

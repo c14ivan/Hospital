@@ -61,6 +61,7 @@ CREATE TABLE `context` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT,
   `contextlevel` tinyint(2) NOT NULL DEFAULT '0',
   `instanceid` bigint(10) NOT NULL DEFAULT '0',
+  `instancename` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

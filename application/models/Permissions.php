@@ -29,7 +29,9 @@ class Permissions extends CI_Model
         $this->table_caps         = $ci->config->item('db_table_prefix', 'permission').$this->table_caps;
         $this->table_ctx          = $ci->config->item('db_table_prefix', 'permission').$this->table_ctx;
     }
-    function has_permission($url,$user,$context){
+    function has_permission($url,$user=0,$context=0){
+        $user_id = ($user>0)?$user:$this->session->userdata('user_id');
+        $context = ($context>0)?$context:$this->session->userdata('context');
         
         return true;
     }
@@ -39,9 +41,9 @@ class Permissions extends CI_Model
      * @param int $instanceid id of the instance to be created
      * @return unknown|boolean id of the created context or false if couldn't create
      */
-    function create_context($contextlevel,$instanceid){
+    function create_context($contextlevel,$instanceid,$name){
         if(!$ctx=$this->get_context($instanceid, $contextlevel)){
-            $data=array('contextlevel'=>$contextlevel,'instanceid'=>$instanceid);
+            $data=array('contextlevel'=>$contextlevel,'instanceid'=>$instanceid,'instancename'=>$name);
             if ($this->db->insert($this->table_ctx, $data)) {
                 $ctx = $this->db->insert_id();
             }
@@ -141,6 +143,26 @@ class Permissions extends CI_Model
         return $role_id;
     }
     
+    function update_role($name,$weight,$shortname,$description=''){
+        $data['weight'] = $weight;
+        $data['description'] = $description;
+        $this->db->where('shortname', $shortname);
+        $this->db->update($this->table_roles, $data);
+        
+        $this->db->where('shortname', $shortname);
+        $query=$this->db->get($this->table_roles);
+        $rol=$query->row();
+        if($rol){
+            foreach ($this->get_capabilities as $cap){
+                $permission=0;
+                if(($capmode=='weight' && $role->weight > $capability['weight']) || ($capmode=='role' && strpos($capability['roles'], $role['shortname'])))
+                    $permission=1;
+                $this->set_role_permission($rol->id,$cap['id'],$permission,$cap['position']);
+            }
+            return true;
+        }
+        return false;
+    }
     function init_role($roleid){
         $capmode=$this->config->item('permissions_mode','permission');
         $role= $this->get_role_by_id($roleid);
@@ -171,7 +193,18 @@ class Permissions extends CI_Model
          
         return NULL;
     }
-
+    function get_roles(){
+         
+        $query = $this->db->get($this->table_roles);
+        $response=Array();
+        if ($query->num_rows() > 0){
+            foreach ($query->result_array() as $role){
+                $response[$role['id']]=$role['name'];
+            }
+        }
+         
+        return $response;
+    }
     /**
      * Get a Role with an id
      *
@@ -270,16 +303,20 @@ class Permissions extends CI_Model
     function get_user_enrolment($userid,$contextid,$timestart='',$timeend=''){
         if($userid!=''){
             $this->db->where('userid=',$userid);
+        	$this->db->or_where('userid=',0);
+        }else{
+        	$this->db->where('userid=',0);
         }
         $this->db->where('contextid',$contextid);
+        
         if($timestart!=''){
             $this->db->where('timestart<',$timestart);
         }
         if($timeend!=''){
             $this->db->where('timeend>',$timeend);
+        }else{
+        	$this->db->or_where('timeend=','NULL');
         }
-        $this->db->or_where('timeend=','NULL');
-        $this->db->or_where('userid=',0);
         
         $this->db->order_by("userid", "desc");
         $this->db->limit(1);

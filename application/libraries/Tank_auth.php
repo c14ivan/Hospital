@@ -65,6 +65,9 @@ class Tank_auth
 					if ($user->banned == 1) {									// fail - banned
 						$this->error = array('banned' => $user->ban_reason);
 
+					}elseif ($user->deleted == 1) {									// fail - banned
+						$this->error = array('deleted' => lang('auth_userdeleted'));
+
 					} else {
 						$this->ci->session->set_userdata(array(
 								'user_id'	=> $user->id,
@@ -486,7 +489,25 @@ class Tank_auth
 		}
 		return FALSE;
 	}
-
+	/**
+	 * Delete user from the site (only when user is logged in)
+	 *
+	 * @param	string
+	 * @return	bool
+	 */
+	function delete_user_by_id($userid)
+	{
+	    $user_id = $this->ci->session->userdata('user_id');
+	
+	    if (!is_null($user = $this->ci->users->get_user_by_id($user_id, TRUE))) {
+	
+	        $this->ci->users->delete_user($user_id);
+	        if($user_id==$userid){
+	            $this->logout();
+	        }
+	    }
+	    return FALSE;
+	}
 	/**
 	 * Get error message.
 	 * Can be invoked after any failed operation such as login or register.
@@ -498,6 +519,9 @@ class Tank_auth
 		return $this->error;
 	}
 
+	function get_user_by_id($userid){
+	    return $this->ci->users->get_user_by_id($userid,1);
+	}
 	/**
 	 * Save data for user's autologin
 	 *

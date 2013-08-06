@@ -30,15 +30,18 @@ class Permission extends CI_Controller {
     /**
      * TODO make something with this, it's only for update profiles quickly on development
      */
-    function update(){
+    function reset(){
 
         $capmode=$this->config->item('permissions_mode','permission');
         //1. crear las capabilities en DB
         $capabilities=$this->config->item('capabilities','permission');
         foreach ($capabilities as $capability => $cap){
-            $vis=(isset($cap['visible']))?1:0;
+            $vis=(isset($cap['visible']) && $cap['visible'])?1:0;
             $pos=(isset($cap['position']))?$cap['position']:'';
-            $this->permissions->set_capability($capability,$cap['weight'],$cap['ctx_level'],$pos,$vis);
+            $roles=(isset($cap['roles']))?$cap['roles']:'';
+            $parent=(isset($cap['parent']))?$cap['parent']:'';
+            $icon=(isset($cap['icon']))?$cap['icon']:'';
+            $this->permissions->set_capability($capability,$cap['weight'],$cap['ctx_level'],$pos,$vis,$roles,$parent,$icon);
         }
 
         //2. crear los roles por defecto, crear las capacidades de los roles, comparando los pesos de los roles con los pesos de las capacidades y
@@ -48,6 +51,7 @@ class Permission extends CI_Controller {
         foreach($roles as $role){
             $role['id'] = $this->permissions->update_role($role['name'],$role['weight'],$role['shortname'],$role['description']);
         }
+        redirect();
     }
     /**
      * Instalation, create the defaults and insert into database
@@ -59,7 +63,7 @@ class Permission extends CI_Controller {
             //1. crear las capabilities en DB
             $capabilities=$this->config->item('capabilities','permission');
             foreach ($capabilities as $capability => $cap){
-                $vis=(isset($cap['visible']))?1:0;
+                $vis=(isset($cap['visible']) && $cap['visible'])?1:0;
                 $pos=(isset($cap['position']))?$cap['position']:'';
                 $roles=(isset($cap['roles']))?$cap['roles']:'';
                 $parent=(isset($cap['parent']))?$cap['parent']:'';
@@ -72,16 +76,16 @@ class Permission extends CI_Controller {
             $roles=$this->config->item('default-roles', 'permission');
             $adminrole=array();
             foreach($roles as $role){
-                if(!isset($adminrole) || $role['weigth']>$adminrole['weigth']){
+                if(!isset($adminrole) || $role['weight']>$adminrole['weight']){
                     $adminrole=$role;
                 }
                 $role['id'] = $this->permissions->create_role($role['name'],$role['weight'],$role['shortname'],$role['description']);
             }
 
             //3. crear contexto home, debe tener context level 10 e instanceid=0
-            $home_contextid=$this->permissions->create_context(CONTEXT_HOME,0);
+            $home_contextid=$this->permissions->create_context(CONTEXT_HOME,0,'site');
             //4 crear role por defecto para todos en el home
-            $role=$this->permissions->get_role($this->input->post('default_role'));
+            $role=$this->permissions->get_role($this->config->item('default-role', 'permission'));
             if($role){
                 //5 asign default role to everybody in the home
                 $this->permissions->enrol_user(0,$home_contextid,$role->id);

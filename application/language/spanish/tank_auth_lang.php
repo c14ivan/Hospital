@@ -9,7 +9,7 @@ $lang['auth_username_in_use'] = 'Nombre de usuario en uso. Por favor, seleccione
 $lang['auth_current_email'] = 'Este es su email actual';
 $lang['auth_incorrect_captcha'] = 'Su código de confirmación no concuerda con el de la imagen.';
 $lang['auth_captcha_expired'] = 'Su código de confirmación ha expirado. Por favor, intentelo de nuevo.';
-
+$lang['auth_userdeleted']='El usuario fue eliminado';
 // Notifications
 $lang['auth_message_logged_out'] = 'Se ha cerrado la sesión con éxito.';
 $lang['auth_message_registration_disabled'] = 'El registro está deshabilitado.';
@@ -36,6 +36,7 @@ $lang['auth_subject_reset_password'] = 'Su nueva contraseña en %s';
 $lang['auth_subject_change_email'] = 'Su nuevo email en %s';
 
 //labels
+$lang['aut_adduser']="Agregar Usuario";
 $lang['auth_logwithusername'] = 'Login';
 $lang['auth_logwithemail'] = 'E-mail';
 $lang['auth_logwithusernameormail'] = 'Login o E-mail';
