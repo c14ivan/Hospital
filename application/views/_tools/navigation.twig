@@ -7,7 +7,7 @@
             {{ _self.dropdown_menu(items.options,vertical) }}
             </li>
         {% else %}
-            <li>{{ anchor(item.url,lang(item.label)) }}</li>
+            <li>{{ anchor(item.url,lang(item.label),{class:'ajax-link'}) }}</li>
         {% endif %}
     {% endfor %}
     </ul>

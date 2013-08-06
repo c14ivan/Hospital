@@ -40,7 +40,7 @@ $config['permission']['default-roles']=array(
 $config['permission']['capabilities']=array(
         'auth/view' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),
         'auth/add' => array('weight'=>30, 'visible'=>false,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),
-        'permission/admin_roles' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),
+        'permission/admin_roles' => array('weight'=>30, 'visible'=>false,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),
         'permission/create_role' => array('weight'=>30, 'visible'=>false,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),
         'permission/update' => array('weight'=>30, 'visible'=>false,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),
         'permission/enrolments' => array('weight'=>30, 'visible'=>false,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),

@@ -149,13 +149,15 @@ class Permissions extends CI_Model
         $this->db->where('shortname', $shortname);
         $this->db->update($this->table_roles, $data);
         
+        $capmode=$this->config->item('permissions_mode','permission');
+        
         $this->db->where('shortname', $shortname);
         $query=$this->db->get($this->table_roles);
         $rol=$query->row();
         if($rol){
-            foreach ($this->get_capabilities as $cap){
+            foreach ($this->get_capabilities() as $cap){
                 $permission=0;
-                if(($capmode=='weight' && $role->weight > $capability['weight']) || ($capmode=='role' && strpos($capability['roles'], $role['shortname'])))
+                if(($capmode=='weight' && $rol->weight > $cap['weight']) || ($capmode=='role' && strpos($cap['roles'], $rol['shortname'])))
                     $permission=1;
                 $this->set_role_permission($rol->id,$cap['id'],$permission,$cap['position']);
             }
