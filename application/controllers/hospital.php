@@ -34,12 +34,12 @@ class Hospital extends MY_Controller {
                 'headers'=>$headers,
                 'data'=>$unidades,
                 'hasactions'=>true,
-                'canedit'=>$this->Permissions->has_permission('Hospital/units'),
-                'canadd'=>$this->Permissions->has_permission('Hospital/units'),
-                'candel'=>$this->Permissions->has_permission('Hospital/units'),
-                'urldel'=>site_url("Hospital/delunit"),
-                'urladd'=>site_url("Hospital/editunit"),
-                'urledit'=>site_url("Hospital/editunit"),
+                'canedit'=>$this->Permissions->has_permission('hospital/units'),
+                'canadd'=>$this->Permissions->has_permission('hospital/units'),
+                'candel'=>$this->Permissions->has_permission('hospital/units'),
+                'urldel'=>site_url("hospital/delunit"),
+                'urladd'=>site_url("hospital/editunit"),
+                'urledit'=>site_url("hospital/editunit"),
                 'delajax'=>true,
                 'icon'=>'user',
                 'title'=>lang('units'),
@@ -59,12 +59,12 @@ class Hospital extends MY_Controller {
                 'headers'=>$headers,
                 'data'=>$rooms,
                 'hasactions'=>true,
-                'canedit'=>$this->Permissions->has_permission('Hospital/rooms'),
-                'canadd'=>$this->Permissions->has_permission('Hospital/rooms'),
-                'candel'=>$this->Permissions->has_permission('Hospital/rooms'),
-                'urldel'=>site_url("Hospital/delroom"),
-                'urladd'=>site_url("Hospital/editroom"),
-                'urledit'=>site_url("Hospital/editroom"),
+                'canedit'=>$this->Permissions->has_permission('hospital/rooms'),
+                'canadd'=>$this->Permissions->has_permission('hospital/rooms'),
+                'candel'=>$this->Permissions->has_permission('hospital/rooms'),
+                'urldel'=>site_url("hospital/delroom"),
+                'urladd'=>site_url("hospital/editroom"),
+                'urledit'=>site_url("hospital/editroom"),
                 'delajax'=>true,
                 'icon'=>'book',
                 'title'=>lang('rooms'),
@@ -92,7 +92,7 @@ class Hospital extends MY_Controller {
             }else{
                 $this->Building->addUnit($post['name'],$post['description']);
             }
-            redirect('Hospital/units');
+            redirect('hospital/units');
         }
         $name='';
         $desc='';
@@ -142,7 +142,7 @@ class Hospital extends MY_Controller {
             }else{
                 $this->Building->addRoom($post['name'],$post['description'],$post['unit']);
             }
-            redirect('Hospital/rooms');
+            redirect('hospital/rooms');
         }
         $name='';
         $desc='';

@@ -26,7 +26,7 @@ $config['default-role']='visitor';
 $config['permission']['menu_positions']=array('left-bar','top','bottom','mini-top','status');
 
 //default roles to be created, could be created in the application
-$config['permission']['default-roles']=array(
+$config['permission']['roles']=array(
         array('name'=>'Superuser','weight'=>50,'shortname'=>'super','description'=>''),
         array('name'=>'Administrator','weight'=>40,'shortname'=>'admin','description'=>''),
         array('name'=>'Pharmacy','weight'=>30,'shortname'=>'pharmacy','description'=>''),

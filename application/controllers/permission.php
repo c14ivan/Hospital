@@ -10,7 +10,7 @@ class Permission extends CI_Controller {
         $this->load->library('tank_auth');
         $this->lang->load('tank_auth');
         $this->lang->load('menu');
-        $this->load->model('Permissions','permissions');
+        $this->load->model('Permissions');
     }
 
     //TODO implement this functions
@@ -41,7 +41,7 @@ class Permission extends CI_Controller {
             $roles=(isset($cap['roles']))?$cap['roles']:'';
             $parent=(isset($cap['parent']))?$cap['parent']:'';
             $icon=(isset($cap['icon']))?$cap['icon']:'';
-            $this->permissions->set_capability($capability,$cap['weight'],$cap['ctx_level'],$pos,$vis,$roles,$parent,$icon);
+            $this->Permissions->set_capability($capability,$cap['weight'],$cap['ctx_level'],$pos,$vis,$roles,$parent,$icon);
         }
 
         //2. crear los roles por defecto, crear las capacidades de los roles, comparando los pesos de los roles con los pesos de las capacidades y
@@ -49,7 +49,7 @@ class Permission extends CI_Controller {
         $roles=$this->config->item('default-roles', 'permission');
         $adminrole=array();
         foreach($roles as $role){
-            $role['id'] = $this->permissions->update_role($role['name'],$role['weight'],$role['shortname'],$role['description']);
+            $role['id'] = $this->Permissions->update_role($role['name'],$role['weight'],$role['shortname'],$role['description']);
         }
         redirect();
     }
@@ -68,27 +68,29 @@ class Permission extends CI_Controller {
                 $roles=(isset($cap['roles']))?$cap['roles']:'';
                 $parent=(isset($cap['parent']))?$cap['parent']:'';
                 $icon=(isset($cap['icon']))?$cap['icon']:'';
-                $this->permissions->set_capability($capability,$cap['weight'],$cap['ctx_level'],$pos,$vis,$roles,$parent,$icon);
+                $this->Permissions->set_capability($capability,$cap['weight'],$cap['ctx_level'],$pos,$vis,$roles,$parent,$icon);
             }
 
             //2. crear los roles por defecto, crear las capacidades de los roles, comparando los pesos de los roles con los pesos de las capacidades y
             //   que esten en el context_level 0, por defecto quiero crear capacidades para el home
-            $roles=$this->config->item('default-roles', 'permission');
-            $adminrole=array();
+            $roles=$this->config->item('roles', 'permission');
             foreach($roles as $role){
-                if(!isset($adminrole) || $role['weight']>$adminrole['weight']){
+                if(!isset($adminrole)){
                     $adminrole=$role;
                 }
-                $role['id'] = $this->permissions->create_role($role['name'],$role['weight'],$role['shortname'],$role['description']);
+                if(isset($role['weight']) && isset($adminrole['weight']) && $role['weight']>$adminrole['weight']){
+                    $adminrole=$role;
+                }
+                $role['id'] = $this->Permissions->create_role($role['name'],$role['weight'],$role['shortname'],$role['description']);
             }
 
             //3. crear contexto home, debe tener context level 10 e instanceid=0
-            $home_contextid=$this->permissions->create_context(CONTEXT_HOME,0,'site');
+            $home_contextid=$this->Permissions->create_context(CONTEXT_HOME,0,'site');
             //4 crear role por defecto para todos en el home
-            $role=$this->permissions->get_role($this->config->item('default-role', 'permission'));
+            $role=$this->Permissions->get_role($this->config->item('default-role', 'permission'));
             if($role){
                 //5 asign default role to everybody in the home
-                $this->permissions->enrol_user(0,$home_contextid,$role->id);
+                $this->Permissions->enrol_user(0,$home_contextid,$role->id);
             }
 
             //6. crear un usuario y asignar el role superadministrador para el contexto home.
@@ -96,8 +98,8 @@ class Permission extends CI_Controller {
             if(!$use_username) $post['adminlogin']='';
             $data = $this->tank_auth->create_user($post['adminlogin'],$post['adminmail'],$post['adminpass'],false);
 
-            $roleadmin=$this->permissions->get_role($adminrole['name']);
-            $this->permissions->enrol_user($data['user_id'],$home_contextid,$roleadmin->id);
+            $roleadmin=$this->Permissions->get_role($adminrole['name']);
+            $this->Permissions->enrol_user($data['user_id'],$home_contextid,$roleadmin->id);
             redirect('');
         }else{
             if(validation_errors()!='')
