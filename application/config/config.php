@@ -25,12 +25,12 @@
  * @filesource
  */
 
-$config['appname']	= 'IEF Site';
-$config['company']	= 'Institución educativa la floresta';
+$config['appname']	= 'Great Hospital';
+$config['company']	= 'Great Hospital';
 $config['twitter_profile'] = 'https://twitter.com/ivanJespitia';
 $config['fb_profile'] = 'https://twitter.com/ivanJespitia';
 $config['gplus_profile'] = 'https://twitter.com/ivanJespitia';
-$config['email_info'] = 'tics@ieflafloresta.edu.co';
+$config['email_info'] = 'c14ivan.javier@gmail.com';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

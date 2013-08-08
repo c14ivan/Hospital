@@ -1,8 +1,11 @@
+{%  set config = get_config() %}
+{%  set CI = get_instance() %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ config.language }}">
 <head>
     <meta charset="utf-8">
-    <title>App name</title>
+    <title>{{ config.appname }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
@@ -46,8 +49,6 @@
 </head>
 <body>
 
-{%  set config = get_config() %}
-{%  set CI = get_instance() %}
 {% import '_tools/navigation.twig' as nav %}
 <!-- topbar starts -->
 <div class="navbar">
