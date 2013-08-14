@@ -31,7 +31,8 @@
         var _this = this;
         this._options = $.extend({
           afterSetState: function(key, value) {},
-          afterGetState: function(key, value) {}
+          afterGetState: function(key, value) {},
+          lang:{end:'End',next:'Next',endtour:'End tour'},
         }, options);
         this._steps = [];
         this.setCurrentStep();
@@ -173,9 +174,9 @@
         var content, tip;
         content = "" + step.content + "<br /><p>";
         if (step.end) {
-          content += "<a href='#' class='end'>End</a>";
+          content += "<a href='#' class='end'>"+this._options.lang.end+"</a>";
         } else {
-          content += "<a href='#" + step.next + "' class='next'>Next &raquo;</a>          <a href='#' class='pull-right end'>End tour</a></p>";
+          content += "<a href='#" + step.next + "' class='next'>"+this._options.lang.next+" &raquo;</a>          <a href='#' class='pull-right end'>"+this._options.lang.endtour+"</a></p>";
         }
         $(step.element).popover({
           placement: step.placement,

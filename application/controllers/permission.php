@@ -46,7 +46,7 @@ class Permission extends CI_Controller {
 
         //2. crear los roles por defecto, crear las capacidades de los roles, comparando los pesos de los roles con los pesos de las capacidades y
         //   que esten en el context_level 0, por defecto quiero crear capacidades para el home
-        $roles=$this->config->item('default-roles', 'permission');
+        $roles=$this->config->item('roles', 'permission');
         $adminrole=array();
         foreach($roles as $role){
             $role['id'] = $this->Permissions->update_role($role['name'],$role['weight'],$role['shortname'],$role['description']);

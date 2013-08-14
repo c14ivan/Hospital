@@ -24,6 +24,11 @@ $lang['delete']="Eliminar";
 $lang['ajaxerror']="Hubo un error en la operación";
 $lang['ajaxok']="Operación exitosa";
 
+$lang['starttour']="Tour del Sitio";
+$lang['tour_end']="Terminar";
+$lang['tour_next']="Siguiente";
+$lang['tour_endtour']="Terminar Tour";
+
 $lang['table_recordsperpage']="Mostrar _MENU_ registros por pagina";
 $lang['table_noregisters']="No existen Registros";
 $lang['table_pager']="Mostrando desde _START_ hasta _END_ de _TOTAL_ registros";

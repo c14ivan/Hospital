@@ -36,7 +36,7 @@
     {{ css('jquery.iphone.toggle.css') }}
     {{ css('opa-icons.css') }}
     {{ css('uploadify.css') }}
-
+    <link rel="stylesheet" type="text/css" href="{{ asset_url()~'cssapp/general.css' }}" media="all">
     <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -55,7 +55,6 @@
     <div class="navbar-inner">
         <div class="container-fluid">
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse">
-                <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
@@ -88,14 +87,16 @@
                 </a>
                 <ul class="dropdown-menu">
                 {% if CI.session.userdata('username') %}
-                    <li><a href="{{ site_url('auth/profile')}}">{{ lang('auth_profile') }}</a></li>
-                    <li class="divider"></li>
                     <li><a href="{{ site_url('auth/logout')}}"> {{ lang('logout') }} </a></li>
                 {% else %}
                     <li><a href="{{ site_url('auth/login')}}">{{ lang('login') }}</a></li>
                 {% endif %}
-                    
                 </ul>
+            </div>
+            <div class="btn-group pull-right" >
+                <a class="btn starttour" data-toggle="" href="#">
+                    <i class="icon-globe"></i><span class="hidden-phone"> {{ lang('starttour') }}</span>
+                </a>
             </div>
             <!-- user dropdown ends -->
 
@@ -113,69 +114,51 @@
     </div>
 </div>
 <!-- topbar ends -->
-<div class="container-fluid">
-<div class="row-fluid">
-{% set topmenu = CI.Permissions.get_user_menu(CI.session.userdata('user_id'),CI.session.userdata('context'),'left-bar') %}
-<!-- left menu starts -->
-    {% if topmenu %}
-	<div class="span2 main-menu-span">
-		<div class="well nav-collapse sidebar-nav">
-			{{ nav.menu(topmenu,'nav-tabs',true) }}
-		</div><!--/.well -->
-	</div><!--/span-->
-	{% endif %}
-<!-- left menu ends -->
-
 <noscript>
     <div class="alert alert-block span10">
         <h4 class="alert-heading">Advertencia!</h4>
         <p>Necesitas tener habilitado <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> para utilizar este sitio.</p>
     </div>
 </noscript>
-
-<div id="content" class="span10">
-<!-- content starts -->
-
-
-<div>
-    <ul class="breadcrumb">
-        <li>
-            <a href="{{ site_url() }}">Inicio</a> <span class="divider">/</span>
-        </li>
-        {% block breadcrums %}
-        <!--<li>
-            <a href="#">Dashboard</a>
-        </li>-->
+<div class="container-fluid">
+    <div class="row-fluid">
+        {% set spanmenu='12' %}
+        {% if notopmenu is not defined%}
+            {% set topmenu = CI.Permissions.get_user_menu(CI.session.userdata('user_id'),CI.session.userdata('context'),'left-bar') %}
+            <!-- left menu starts -->
+                {% if topmenu %}
+                {% set spanmenu='10' %}
+            	<div class="span2 main-menu-span">
+            		<div class="well nav-collapse sidebar-nav">
+            			{{ nav.menu(topmenu,'nav-tabs main-menu',true) }}
+            		</div><!--/.well -->
+            	</div><!--/span-->
+            	{% endif %}
+            <!-- left menu ends -->
+        {% endif %}
+    
+        <div id="content" class="span{{ spanmenu }}">
+            <!-- content starts -->
+            <div>
+                {% if nobreadcrums is not defined%}
+                    <ul class="breadcrumb">
+                        <li>
+                            <a href="{{ site_url() }}">Inicio</a> <span class="divider">/</span>
+                        </li>
+                        {% block breadcrums %}{% endblock %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% block content %}
         {% endblock %}
-    </ul>
-</div>
-    {% block content %}
-{% endblock %}
-<!-- content ends -->
-</div><!--/#content.span10-->
-</div><!--/fluid-row-->
-
-<hr>
-
-<div class="modal hide fade" id="myModal">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">×</button>
-        <h3>Settings</h3>
-    </div>
-    <div class="modal-body">
-        <p>Here settings can be configured...</p>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" data-dismiss="modal">Close</a>
-        <a href="#" class="btn btn-primary">Save changes</a>
-    </div>
-</div>
-
-<footer>
-    <p class="pull-left"><a href="http://www.ieflafloresta.edu.co" target="_blank">IEF</a> {{ "now"|date("Y") }}</p>
-    <p class="pull-right"><!--Powered by: <a href="http://usman.it/free-responsive-admin-template">Charisma</a>--></p>
-</footer>
-
+        <!-- content ends -->
+        </div><!--/#content.span10-->
+    </div><!--/fluid-row-->
+    <hr>
+    <footer>
+        <p class="pull-left"><a href="http://www.ieflafloresta.edu.co" target="_blank">IEF</a> {{ "now"|date("Y") }}</p>
+        <p class="pull-right"><!--Powered by: <a href="http://usman.it/free-responsive-admin-template">Charisma</a>--></p>
+    </footer>
 </div><!--/.fluid-container-->
 
 <!-- external javascript
@@ -264,6 +247,26 @@
 {{ js('charisma.js') }}
 <!-- Standart Functions for the app -->
 <script type="text/javascript" src="{{ asset_url()~'jsapp/stdfunctions.js' }}"></script>
+<script>
+$().ready(function(){
+	if($('.starttour').length && typeof(tour)=='undefined')
+	{
+		var tour = new Tour({lang:{'end':'{{ lang('tour_end') }}','next':'{{ lang('tour_next') }}','endtour':'{{ lang('tour_endtour') }}'}});
+		{% set topmenu = CI.Permissions.get_user_menu(CI.session.userdata('user_id'),CI.session.userdata('context'),'left-bar') %}
+		{% for keymenu in topmenu %}
+		tour.addStep({
+			element:'#menu_{{ keymenu.url|replace({'/':'_'}) }}',
+			title:'{{ lang(keymenu.url) }}',
+			content:'{{ lang(keymenu.url~'_helper') }}'
+		});
+		{% endfor %}
+		{% block toursteps %}{% endblock %}
+		$('.starttour').click(function(){
+		    tour.restart();
+		});
+	}
+});
+</script>
 {% block jscode %}
 {% endblock %}
 

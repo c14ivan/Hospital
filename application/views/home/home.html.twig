@@ -1,4 +1,8 @@
 {% extends '_layouts/index.html.twig' %}
+{% set notopmenu=true %}
+{% set nobreadcrums=true %}
 {% block content %}
-content goes here
-	{% endblock %}
+{% import '_tools/navigation.twig' as nav %}
+{% set menu = CI.Permissions.get_user_menu(CI.session.userdata('user_id'),CI.session.userdata('context'),'left-bar') %}
+{{ nav.tilemenu(menu) }}
+{% endblock %}

@@ -276,6 +276,9 @@ class Permissions extends CI_Model
                     'contextlevel'=> $context_level,
                     'position'=>$position,
                     'visible'=> $visible,
+                    'roles' => $roles,
+                    'parent' => $parent,
+                    'icon' => $icon,
             );
             
             $this->db->where('id', $cap['id']);
@@ -385,7 +388,7 @@ class Permissions extends CI_Model
             if(isset($item['parent']) && $item['parent']!=''){
                 $menu_response[$item['parent']]['options'][$item['capability']]=array('url'=>$item['capability'],'label'=>$item['capability'],'icon'=>$item['icon']);
             }else{
-                $menu_response[$item['capability']]=array('url'=>$item['capability'],'label'=>$item['capability']);
+                $menu_response[$item['capability']]=array('url'=>$item['capability'],'label'=>$item['capability'],'icon'=>$item['icon']);
             }
         }
         return $menu_response;

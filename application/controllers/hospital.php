@@ -28,7 +28,6 @@ class Hospital extends MY_Controller {
         
         $headers= array(
                 'name'=>array('priority'=>1,'valor'=>lang('name')),
-                'description'=>array('priority'=>2,'valor'=>lang('description')),
         );
         $data=array(
                 'headers'=>$headers,
@@ -52,8 +51,8 @@ class Hospital extends MY_Controller {
         
         $headers= array(
                 'unit'=>array('priority'=>1,'valor'=>lang('unit')),
-                'name'=>array('priority'=>2,'valor'=>lang('name')),
-                'description'=>array('priority'=>3,'valor'=>lang('description')),
+                'roomnumber'=>array('priority'=>2,'valor'=>lang('roomid')),
+                'roomtype'=>array('priority'=>3,'valor'=>lang('roomtype'),'type'=>'lang'),
         );
         $data=array(
                 'headers'=>$headers,
@@ -82,15 +81,15 @@ class Hospital extends MY_Controller {
         
     }
     function register(){
-        
+        $this->twig->display('hospital/register');
     }
     function editunit($unitid=0){
         $post=$this->input->post();
         if(!empty($post)){
             if($post['id']>0){
-                $this->Building->updateUnit($post['id'],$post['name'],$post['description']);
+                $this->Building->updateUnit($post['id'],$post['name']);
             }else{
-                $this->Building->addUnit($post['name'],$post['description']);
+                $this->Building->addUnit($post['name']);
             }
             redirect('hospital/units');
         }
@@ -99,7 +98,6 @@ class Hospital extends MY_Controller {
         if($unitid>0){
             $unit=$this->Building->getUnit($unitid);
             $name=$unit->name;
-            $desc=$unit->description;
         }
         
         $data=array(
@@ -108,14 +106,10 @@ class Hospital extends MY_Controller {
                 'campos'=>array(
                         'id'=>array('tipo'=>'input','type'=>'hidden','name'=>'id','value'=>$unitid),
                         'name'=>array('tipo'=>'input','type'=>'text','name'=>'name','label'=>lang('unit'),'value'=>$name),
-                        'description'=>array('tipo'=>'textarea','type'=>'textarea','name'=>'description','label'=>lang('description'),'value'=>$desc),
                 ),
                 'reglas'=>array(
                         'name'=>array(
                                 'required'=>array('val'=>'true','msj'=>$this->lang->line('required','')),
-                        ),
-                        'description'=>array(
-                                'required'=>array('val'=>'true','msj'=>$this->lang->line('required')),
                         ),
                 )
         );
@@ -138,18 +132,19 @@ class Hospital extends MY_Controller {
         $post=$this->input->post();
         if(!empty($post)){
             if($post['id']>0){
-                $this->Building->updateRoom($post['id'],$post['name'],$post['description'],$post['unit']);
+                $this->Building->updateRoom($post['id'],$post['name'],$post['roomtype'],$post['unit']);
             }else{
-                $this->Building->addRoom($post['name'],$post['description'],$post['unit']);
+                $this->Building->addRoom($post['name'],$post['roomtype'],$post['unit']);
             }
             redirect('hospital/rooms');
         }
-        $name='';
-        $desc='';
+        $roomnumber='';
+        $roomtype='';
+        $unit=0;
         if($roomid>0){
             $room=$this->Building->getRoom($roomid);
-            $name=$room->name;
-            $desc=$room->description;
+            $roomnumber=$room->roomnumber;
+            $roomtype=$room->roomtype;
             $unit=$room->unitid;
         }
     
@@ -157,23 +152,28 @@ class Hospital extends MY_Controller {
         $unitsarr=array();
         if(count($units)>0){
             foreach ($units as $unit){
-                $unitsarr[$unit['id']]=$unit['name'];
+                $unitsarr[$unit['unitid']]=$unit['name'];
             }
         }
+        $roomtypesarr=array(
+                'room_basic'=>lang('room_basic'),
+                'room_specialized'=>lang('room_specialized'),
+                'room_intensive'=>lang('room_intensive'),
+        );
         $data=array(
                 'icon'=>'th',
                 'title'=> lang('units'),
                 'campos'=>array(
                         'id'=>array('tipo'=>'input','type'=>'hidden','name'=>'id','value'=>$roomid),
-                        'name'=>array('tipo'=>'input','type'=>'text','name'=>'name','label'=>lang('roomid'),'value'=>$name),
-                        'description'=>array('tipo'=>'textarea','type'=>'textarea','name'=>'description','label'=>lang('description'),'value'=>$desc),
-                        'unit'=>array('tipo'=>'select','label'=>lang('unit'),'name'=>'unit','opciones'=>$unitsarr)
+                        'name'=>array('tipo'=>'input','type'=>'text','name'=>'name','label'=>lang('roomid'),'value'=>$roomnumber),
+                        'roomtype'=>array('tipo'=>'select','name'=>'roomtype','label'=>lang('roomtype'),'value'=>$roomtype,'opciones'=>$roomtypesarr),
+                        'unit'=>array('tipo'=>'select','label'=>lang('unit'),'name'=>'unit','opciones'=>$unitsarr,'value'=>$unit)
                 ),
                 'reglas'=>array(
                         'name'=>array(
                                 'required'=>array('val'=>'true','msj'=>$this->lang->line('required','')),
                         ),
-                        'description'=>array(
+                        'roomtype'=>array(
                                 'required'=>array('val'=>'true','msj'=>$this->lang->line('required'),''),
                         ),
                         'unit'=>array(
@@ -197,5 +197,5 @@ class Hospital extends MY_Controller {
     }
 }
 
-/* End of file welcome.php */
+/* End of file hospital.php */
 /* Location: ./application/controllers/welcome.php */

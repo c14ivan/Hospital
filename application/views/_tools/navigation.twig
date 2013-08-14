@@ -1,5 +1,5 @@
 {% macro menu(items,class,vertical) %}
-    <ul class="nav {{ class }} {% if vertical %} nav-stacked {% endif %}">
+    <ul class="nav {{ class }} {% if vertical %}nav-stacked {% endif %}">
     {% for item in items %}
         {% if item.options %}
             <li class="dropdown">
@@ -7,7 +7,7 @@
             {{ _self.dropdown_menu(items.options,vertical) }}
             </li>
         {% else %}
-            <li>{{ anchor(item.url,lang(item.label),{class:'ajax-link'}) }}</li>
+            <li id="menu_{{ item.label|replace({'/':'_'}) }}"><a class="ajax-link" href="{{ site_url(item.url) }}">{% if item.icon %}<i class="{{ item.icon }}"></i>{% endif %}<span class="hidden-tablet"> {{ lang(item.label) }}</span></a></li>
         {% endif %}
     {% endfor %}
     </ul>
@@ -22,8 +22,26 @@
                 {{ _self.dropdown_menu(items.options,true) }}
                 </li>
             {% else %}
-                <li>{{ anchor(item.url,lang(item.label)) }}</li>
+                <li id="menu_{{ item.label|replace({'/':'_'}) }}"><a class="ajax-link" href="{{ site_url(item.url) }}">{% if item.icon %}<i class="{{ item.icon }}"></i>{% endif %}<span class="hidden-tablet"> {{ lang(item.label) }}</span></a></li>
             {% endif %}
         {% endfor %}
     </ul>
+{% endmacro %}
+
+{% macro tilemenu(items) %}
+    <div class="row-fluid">
+        {% for item in items %}
+            <div>
+            {% if items.options %}
+                <h4>{{ lang(item.label) }}</h4>
+                {{ _self.tilemenu(items.options) }}
+            {% else %}
+                <a class="well span3 top-block bigicons" href="{{ site_url(item.url) }}" id="menu_{{ item.label|replace({'/':'_'}) }}">
+                    {% if item.icon %}<i class="{{ item.icon }}"></i>{% endif %}
+        			<div>{{ lang(item.label) }}</div>
+        		</a>
+            {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 {% endmacro %}

@@ -30,14 +30,13 @@ class Building extends CI_Model{
         return $response;
     }
     function getUnit($id){
-        $this->db->where('id', $id);
+        $this->db->where('unitid', $id);
         $query=$this->db->get($this->tableunits);
         return $query->row();
     }
-    function addUnit($name,$description){
+    function addUnit($name){
         $data = array(
                 'name' => $name,
-                'description' => $description,
         );
         
         if($this->db->insert($this->tableunits, $data)){
@@ -45,24 +44,23 @@ class Building extends CI_Model{
         }
         return false;
     }
-    function updateUnit($id,$name,$description){
+    function updateUnit($id,$name){
         $data = array(
                 'name' => $name,
-                'description' => $description,
         );
-        $this->db->where('id', $id);
+        $this->db->where('unitid', $id);
         $this->db->update($this->tableunits, $data);
         
         return ($this->db->affected_rows()==1)?true:false;
     }
     function deleteUnit($id){
-        $this->db->delete($this->tableunits, array('id'=>$id));
+        $this->db->delete($this->tableunits, array('unitid'=>$id));
         
         return ($this->db->affected_rows()==1)?true:false;
     }
     function getRooms(){
-        $this->db->select("{$this->tablerooms}.id,{$this->tableunits}.name as unit,{$this->tablerooms}.name,{$this->tablerooms}.description");
-        $this->db->join($this->tableunits,"{$this->tableunits}.id={$this->tablerooms}.unitid");
+        $this->db->select("{$this->tablerooms}.roomid as id,{$this->tableunits}.name as unit,{$this->tablerooms}.roomnumber,{$this->tablerooms}.roomtype");
+        $this->db->join($this->tableunits,"{$this->tableunits}.unitid={$this->tablerooms}.unitid");
         $query=$this->db->get($this->tablerooms);
         $response=array();
         if ($query->num_rows() > 0){
@@ -71,14 +69,14 @@ class Building extends CI_Model{
         return $response;
     }
     function getRoom($id){
-        $this->db->where('id', $id);
+        $this->db->where('roomid', $id);
         $query=$this->db->get($this->tablerooms);
         return $query->row();
     }
-    function addRoom($name,$description,$unit){
+    function addRoom($name,$type,$unit){
         $data = array(
-                'name' => $name,
-                'description' => $description,
+                'roomnumber' => $name,
+                'roomtype' => $type,
                 'unitid'=>$unit
         );
     
@@ -87,19 +85,19 @@ class Building extends CI_Model{
         }
         return false;
     }
-    function updateRoom($id,$name,$description,$unit){
+    function updateRoom($id,$name,$type,$unit){
         $data = array(
-                'name' => $name,
-                'description' => $description,
+                'roomnumber' => $name,
+                'roomtype' => $type,
                 'unitid'=>$unit,
         );
-        $this->db->where('id', $id);
+        $this->db->where('roomid', $id);
         $this->db->update($this->tablerooms, $data);
     
         return ($this->db->affected_rows()==1)?true:false;
     }
     function deleteRoom($id){
-        $this->db->delete($this->tablerooms, array('id'=>$id));
+        $this->db->delete($this->tablerooms, array('roomid'=>$id));
         
         return ($this->db->affected_rows()==1)?true:false;
     }

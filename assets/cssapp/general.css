@@ -58,3 +58,41 @@ ul.wide-list li .action {
 	cursor:move;
 	z-index:10;
 }
+.bigicons [class^="iconh-"],[class*=" iconh-"] {
+	width: 64px;
+    height: 64px;
+}
+[class^="iconh-"],[class*=" iconh-"] {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: .3em;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-repeat: no-repeat;
+    background-size:contain;
+}
+.iconh-user{
+    background-image: url("../imgapp/hospital/nurse.png");
+}
+.iconh-register{
+	background-image: url("../imgapp/hospital/ambulance.png");
+}
+.iconh-searchpatient{
+	background-image: url("../imgapp/hospital/handicapped_person.png");
+}
+.iconh-history{
+	background-image: url("../imgapp/hospital/medical_record.png");
+}
+.iconh-building{
+	background-image: url("../imgapp/hospital/hospital.png");
+}
+.iconh-rooms{
+	background-image: url("../imgapp/hospital/bed.png");
+}
+.iconh-diet{
+	background-image: url("../imgapp/hospital/food.png");
+}
+.iconh-inventory{
+	background-image: url("../imgapp/hospital/first_aid.png");
+}

@@ -36,7 +36,7 @@ CREATE TABLE `capabilities` (
   `position` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `roles` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `parent` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `icon` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `icon` varchar(45) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `timemodified` bigint(10) NOT NULL DEFAULT '0',
   `modifierid` bigint(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
