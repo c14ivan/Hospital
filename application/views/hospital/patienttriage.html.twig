@@ -220,12 +220,12 @@ $().ready(function(){
     	'removetagText':'{{ lang('delete')}}',
     	'interactive':false
     });
-    function loadpatientatention(patientid){
+    function loadpatientatention(patientid,asign){
     	$.ajax({
             type:"POST",
             url: '{{ site_url('patients/atendpatient') }}',
             dataType:'json',
-            data:{patient:patientid},
+            data:{patient:patientid,asign:asign},
             error:function (jqXHR, textStatus, errorThrown) {
                 console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
             }
@@ -236,11 +236,12 @@ $().ready(function(){
         	$('#formpatient').find('input[name=lastnames]').val(data.basicinfo.lastname);
         	$('#formpatient').find('input[name=address]').val(data.basicinfo.address);
         	$('#formpatient').find('input[name=bornday]').val(data.basicinfo.bornday);
-        	chars=data.basicinfo.chars.split(',');
-            for (i in chars){
-                $('#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}','norem':true});
-            }
-            
+        	if(data.basicinfo.chars!= null && data.basicinfo.chars.length>0){
+        	    chars=data.basicinfo.chars.split(',');
+                for (i in chars){
+                    $('#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}','norem':true});
+                }
+        	}
             $('#patientatention').find('input[name=atentionid]').val(data.atentioninfo.atentionid);
         	$('#patientatention').find('input[name=entrancedate]').val(data.atentioninfo.entrancedate);
             
@@ -250,7 +251,7 @@ $().ready(function(){
     }
     function dom_tablepatients(){
         $('.view_pat').click(function(){
-        	loadpatientatention($(this).attr('data-id'));
+        	loadpatientatention($(this).attr('data-id'),true);
         });
     }
     function labelpriority(priority){
@@ -273,8 +274,11 @@ $().ready(function(){
 
             	room=(data.patients[i].roomnumber)?data.patients[i].unitname+':'+data.patients[i].roomnumber:'{{ lang('noasign') }}';
             	prioritylabel=labelpriority(data.patients[i].priority);
-            	ident=(data.patients[i].patid.trim().length>0)?data.patients[i].patid:data.patients[i].chars;
-            	patientstable.fnAddData( [htmlact,data.patients[i].lastname,data.patients[i].name,ident,room,data.patients[i].entrancedate,prioritylabel] );
+            	ident=(data.patients[i].patid && data.patients[i].patid.trim().length>0)?data.patients[i].patid:data.patients[i].chars;
+            	lastname=data.patients[i].lastname?data.patients[i].lastname:'';
+            	patname=data.patients[i].name?data.patients[i].name:'';
+            	
+            	patientstable.fnAddData( [htmlact,lastname,patname,ident,room,data.patients[i].entrancedate,prioritylabel] );
             }
             dom_tablepatients();
         });
@@ -300,9 +304,11 @@ $().ready(function(){
                     $('#formpatient').find('input[name=address]').val(data.patient.address);
                     $('#formpatient').find('input[name=bornday]').val(data.patient.bornday);
 
-                    chars=data.patient.chars.split(',');
-                    for (i in chars){
-                        $('form#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}'});
+                    if(data.patients.chars!= null && data.patients.chars.length>0){
+                        chars=data.patient.chars.split(',');
+                        for (i in chars){
+                            $('form#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}'});
+                        }
                     }
                     $('#patientinfo').slideDown();
                 }else{
@@ -312,7 +318,7 @@ $().ready(function(){
 	}
 	loadcurrentpatients();
 	{% if currentpatient %}
-        loadpatientatention({{ currentpatient }});
+        loadpatientatention({{ currentpatient }},false);
 	{% endif %}
 });
 </script>

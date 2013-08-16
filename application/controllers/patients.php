@@ -122,9 +122,15 @@ class Patients extends MY_Controller {
     function atendpatient(){
         if(!$this->input->is_ajax_request()) redirect();
         $patientid=$this->input->post('patient');
+        $asign=$this->input->post('asign');
         $patientinfo=$this->Patient->loadpatient($patientid);
         $currentatention=$this->Patient->currentAtention($patientid);
-        $atend=$this->Patient->asignDoctor($currentatention->atentionid,$this->session->userdata('user_id'));
+        if($asign){
+            $atend=$this->Patient->asignDoctor($currentatention->atentionid,$this->session->userdata('user_id'));
+        }else{
+            $atend=true;
+        }
+        
         echo json_encode(array('ok'=>$atend,'basicinfo'=>$patientinfo,'atentioninfo'=>$currentatention));
     }
     function diagnosepatient(){
@@ -137,12 +143,12 @@ class Patients extends MY_Controller {
             //buscar habitación:
             $room=$this->Patient->getAvailableRoom($diagnosis['unit'],$diagnosis['roomtype']);
             if($room){
-                $this->Patient->updateAtention($diagnosis['atentionid'],array('roomid'=>$room->roomid,'doctor'=>0));
+                $this->Patient->updateAtention($diagnosis['atentionid'],array('roomid'=>$room->roomid,'doctor'=>0,'priority'=>$diagnosis['priority']));
             }else{
                 $adddiagnosis=false;
             }
         }else{//sino se cierra
-            $this->Patient->updateAtention($diagnosis['atentionid'],array('status'=>1));
+            $this->Patient->updateAtention($diagnosis['atentionid'],array('status'=>1,'priority'=>$diagnosis['priority']));
         }
         $okdiagnosis=false;
         //agregar diagnostico

@@ -156,11 +156,15 @@ class Patient extends CI_Model{
         }
     }
     function updateAtention($atentionid,$attrs){
-        $this->db->where('atentionid', $atentionid);
-        $this->db->update($this->tableatention, $attrs);
-        return ($this->db->affected_rows()==1)?true:false;
+        if(intval($atentionid)>0){
+            $this->db->where('atentionid', $atentionid);
+            $this->db->update($this->tableatention, $attrs);
+            return ($this->db->affected_rows()==1)?true:false;
+        }
+        return false;
     }
     function asignDoctor($atentionid,$doctorid){
+        $this->db->where('atentionid',$atentionid);
         $this->db->update($this->tableatention, array('doctor'=>$doctorid));
         return ($this->db->affected_rows()==1)?true:false;
     }
