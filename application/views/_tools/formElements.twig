@@ -16,7 +16,7 @@
     {# label: MUESTRA UN <DIV> CONTENIENDO EL TEXTO value Y APLICANDO LA CLASE class #}
     {# ----------------------------------------------------------------------------- #}
     {% macro label(value,class,for) %}
-        <div class="{{ class|default('etiqueta') }}"><label for="{{ for }}">{{ value }}</div>
+        <div class="{{ class|default('etiqueta') }}"><label for="{{ for }}">{{ value }}</label></div>
     {% endmacro %}
     {# span: MUESTRA UN <span> CONTENIENDO EL TEXTO value Y APLICANDO LA CLASE class #}
     {# ----------------------------------------------------------------------------- #}
@@ -85,9 +85,9 @@
         {% endif %}
         {% if type=='date' %}
             {% set type='text' %}
-            {% set class='input datepicker ' %}
+            {% set class=class ~'input datepicker ' %}
         {% elseif type=='file' %}
-            {% set class='input-file uniform_on ' %}
+            {% set class=class ~'input-file uniform_on ' %}
         {% endif %}
         {% if append%}
             {% set classappprep= classappprep ~' input-append' %}
@@ -130,10 +130,14 @@
                         {% if prepend or type=='password' %}
                             {% if prepend%}
                                 {% if prepend.tipo or prepend is not iterable %}
-                                    {{ _self.campo(prepend) }}
+                                    <span class="add-on">
+                                        {{ _self.campo(prepend) }}
+                                    </span>
                                 {% else %}
                                     {% for tmp in prepend %}
-                                        {{ _self.campo(tmp) }}
+                                        <span class="add-on">
+                                            {{ _self.campo(tmp) }}
+                                        </span>
                                     {% endfor %}
                                 {% endif %}
                             {% endif %}
@@ -258,7 +262,8 @@
         {% set icon=campo.icon %}
         {% set iconinv=campo.iconinv %}
         {% set title=campo.title %}
-        <button {% if class %} class="{{ class }}"{% endif %} {% if title %} title="{{ title }}"{% endif %}>
+        {% set id=campo.id %}
+        <button {% if id %} id="{{ id }}"{% endif %} {% if class %} class="{{ class }}"{% endif %} {% if title %} title="{{ title }}"{% endif %}>
         {% if icon %}
             {{ _self.icon(icon,iconinv) }}
         {% endif %}

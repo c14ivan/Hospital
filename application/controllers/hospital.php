@@ -22,6 +22,8 @@ class Hospital extends MY_Controller {
     {
         parent::__construct();
         $this->load->model('Hospital/Building');
+        $this->load->model('Hospital/Patient');
+        $this->config->load('hospital');
     }
     function units(){
         $unidades=$this->Building->getUnits();
@@ -71,17 +73,8 @@ class Hospital extends MY_Controller {
          
         $this->twig->display('general/table',$data);
     }
-    function diet(){
-        
-    }
     function inventory(){
         
-    }
-    function consult(){
-        
-    }
-    function register(){
-        $this->twig->display('hospital/register');
     }
     function editunit($unitid=0){
         $post=$this->input->post();
@@ -155,11 +148,7 @@ class Hospital extends MY_Controller {
                 $unitsarr[$unit['unitid']]=$unit['name'];
             }
         }
-        $roomtypesarr=array(
-                'room_basic'=>lang('room_basic'),
-                'room_specialized'=>lang('room_specialized'),
-                'room_intensive'=>lang('room_intensive'),
-        );
+        $roomtypesarr=$this->config->item('roomtypes', 'hospital');
         $data=array(
                 'icon'=>'th',
                 'title'=> lang('units'),

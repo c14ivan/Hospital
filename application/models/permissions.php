@@ -403,6 +403,12 @@ class Permissions extends CI_Model
         }
         return $menu;
     }
+    function del_capabilities(){
+        $this->db->empty_table($this->table_caps);
+    }
+    function del_role_capabilities(){
+        $this->db->empty_table($this->table_rolecaps);
+    }
     
 }
 

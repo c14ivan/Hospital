@@ -32,8 +32,12 @@ class Permission extends CI_Controller {
      */
     function reset(){
 
+        //1.eliminar capabilites y role capabilities
+        $this->Permissions->del_capabilities();
+        $this->Permissions->del_role_capabilities();
+        
         $capmode=$this->config->item('permissions_mode','permission');
-        //1. crear las capabilities en DB
+        //2. crear las capabilities en DB
         $capabilities=$this->config->item('capabilities','permission');
         foreach ($capabilities as $capability => $cap){
             $vis=(isset($cap['visible']) && $cap['visible'])?1:0;
@@ -44,8 +48,8 @@ class Permission extends CI_Controller {
             $this->Permissions->set_capability($capability,$cap['weight'],$cap['ctx_level'],$pos,$vis,$roles,$parent,$icon);
         }
 
-        //2. crear los roles por defecto, crear las capacidades de los roles, comparando los pesos de los roles con los pesos de las capacidades y
-        //   que esten en el context_level 0, por defecto quiero crear capacidades para el home
+        //3. crear los roles por defecto, crear las capacidades de los roles, comparando los pesos de los roles con los pesos de las capacidades y
+        //que esten en el context_level 0, por defecto quiero crear capacidades para el home
         $roles=$this->config->item('roles', 'permission');
         $adminrole=array();
         foreach($roles as $role){

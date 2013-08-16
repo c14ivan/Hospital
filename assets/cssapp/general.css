@@ -18,7 +18,6 @@ input .errorlabelform{
     margin-left:5px;
 }
 
-
 ul.wide-list li {
 	min-height:28px;
 	padding: 7px 0;
@@ -95,4 +94,23 @@ ul.wide-list li .action {
 }
 .iconh-inventory{
 	background-image: url("../imgapp/hospital/first_aid.png");
+}
+
+.loader1{
+	background-repeat: no-repeat;
+	width: 17px;
+    height: 11px;
+    background-image: url("../img/ajax-loaders/ajax-loader-1.gif");
+}
+.loader2{
+	background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    background-image: url("../img/ajax-loaders/ajax-loader-2.gif");
+}
+.label-yelow{
+	background-color: #F4FA58;
+}
+.label-blue{
+    background-color: #0000FF;
 }

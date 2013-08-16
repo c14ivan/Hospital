@@ -24,10 +24,11 @@ CREATE TABLE `h_patient` (
   `patid` varchar(20) DEFAULT NULL,
   `name` varchar(45) DEFAULT NULL,
   `lastname` varchar(45) DEFAULT NULL,
-  `gender` varchar(2) DEFAULT NULL,
+  `gender` varchar(8) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
-  `bornday` datetime DEFAULT NULL,
+  `bornday` varchar(20) DEFAULT NULL,
   `rh` varchar(2) DEFAULT NULL,
+  `chars` text,
   PRIMARY KEY (`patientid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -39,4 +40,20 @@ CREATE TABLE `h_diagnosis` (
   `treatment` text,
   `doctor` int(11) DEFAULT NULL,
   PRIMARY KEY (`diagnosisid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `h_atention`;
+
+CREATE TABLE `h_atention` (
+  `atentionid` int(11) NOT NULL AUTO_INCREMENT,
+  `patientid` int(11) NOT NULL,
+  `roomid` int(11) DEFAULT NULL,
+  `entrancedate` datetime DEFAULT NULL,
+  `exitdate` datetime DEFAULT NULL,
+  `familiar` varchar(100) DEFAULT NULL,
+  `familiar_phone` varchar(100) DEFAULT NULL,
+  `insurance` varchar(45) DEFAULT NULL,
+  `payment_method` varchar(45) DEFAULT NULL,
+  `priority` bigint(10) DEFAULT NULL,
+  PRIMARY KEY (`atentionid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

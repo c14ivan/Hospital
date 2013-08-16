@@ -1,4 +1,7 @@
 {% extends '_layouts/index.html.twig' %}
+{% block headext %}
+    {{ css('jquery.tagsinput.css') }}
+{% endblock %}
 {% block content %}
 
 {% import '_tools/formElements.twig' as forms %}
@@ -9,13 +12,27 @@
             <h2><i class="icon-{{ icon }}"></i> {{ title }}</h2>
         </div>
         <div class="box-content">
-            <form id="formulario" class="form-horizontal" method="post" autocomplete="{% if noauto %}off{% endif %}">
+            <form id="formpatient" class="form-horizontal" method="post" autocomplete="{% if noauto %}off{% endif %}">
                 <fieldset>
-                
+                {{ forms.campo({'tipo':'input','type':'text','name':'patid','label':lang('patientid'),'maxlength':25,
+                    prepend:{
+                    '1':'<button id="searchpatient" title="'~lang('search')~'"><i class="icon-search"></i></button><div id="searchingpatient"" class="loader2" style="display:none;"></div>',
+                    '2':'<input id="patientnn" type="checkbox" />'~lang('patientnn')}}) }}
+                    <div id="infopatient" style="display:none;">
+                        {{ forms.campo({'tipo':'input','type':'hidden','name':'patientid','value':0}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'names','label':lang('patientnames')}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'lastnames','label':lang('patientlastnames')}) }}
+                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'male':lang('male'),'female':lang('female')} }) }}
+                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'} }) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'address','label':lang('patientaddress'),'maxlength':50}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','class':'dateyearpicker','name':'bornday','label':lang('patientbornday')}) }}
+                    </div>
+                    <div id="rasgospatient" style="display:none;">
+                    {{ forms.campo({'tipo':'input','type':'text','name':'patientchar','label':lang('patientchar')}) }}
+                    </div>
                 </fieldset>
                 <div class="form-actions">
-                    <button type="submit" name="submit" class="btn btn-primary" value="send">{{ lang('send') }}</button>
-                    <button class="btn cancelar">{{ lang('cancel') }}</button>
+                    <button type="submit" name="submit" class="btn btn-primary" value="send">{{ lang('enterpatient') }}</button>
                 </div>
             </form>
         </div>
@@ -23,9 +40,78 @@
 </div>
 {% endblock %}
 {% block jscode %}
+{{ js('jquery.tagsinput.js') }}
 <script type="text/javascript">
 $().ready(function(){
-	
+	$('#formpatient').submit(function(e){
+		console.log($(this).serializeObject());
+		//mejor hacer post
+		if($(this).find('input[name=patid]').val().length==0 &&
+				$(this).find('input[name=names]').val().length==0 &&
+				$(this).find('input[name=lastnames]').val().length==0 &&
+				$(this).find('input[name=patientchar]').val().length==0){
+			showNotification('{{ lang('patientmoreinfo') }}');
+			return false;
+			}
+		return true;
+	});
+	$('#searchpatient').click(function(e){
+		e.preventDefault();
+		var patientid=$(this).closest('.controls').find('input[name=patid]').val();
+		if(patientid.length>0){
+    		$('#searchingpatient').css('display','block');
+    		$(this).css('display','none');
+    		
+    		$.ajax({
+                type:"POST",
+                url: '{{ site_url('patients/searchpatient') }}',
+                dataType:'json',
+                data: {'patientid':patientid},
+                error:function (jqXHR, textStatus, errorThrown) {
+                    console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
+                }
+            }).done(function (data) {
+                if(data.patient){
+                	$('#formpatient').find('input[name=patientid]').val(data.patient.patientid);
+                    $('#formpatient').find('input[name=names]').val(data.patient.name);
+                    $('#formpatient').find('input[name=lastnames]').val(data.patient.lastname);
+                    $('#formpatient').find('select[name=gender]').find('option').removeAttr('selected').find('option[value='+data.patient.gender+']').attr('selected',true);
+                    $('#formpatient').find('select[name=rh]').find('option').removeAttr('selected').find('option[value='+data.patient.rh+']').attr('selected',true);
+                    $('#formpatient').find('input[name=address]').val(data.patient.address);
+                    $('#formpatient').find('input[name=bornday]').val(data.patient.bornday);
+
+                    chars=data.patient.chars.split(',');
+                    for (i in chars){
+                        $('form#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}'});
+                    }
+                    $('#infopatient').slideDown();
+                }else{
+                	showNotification('{{ lang('patientnotfound') }}');
+                	$('#infopatient').slideDown();
+                }
+            	$('#searchingpatient').css('display','none');
+        		$('#searchpatient').css('display','block');
+            });
+		}else{
+			showNotification('{{ lang('patientidnoempty') }}');
+		}
+	});
+	$('#patientnn').change(function(){
+		var check=$(this);
+		if(check.is(':checked')){
+			$('#rasgospatient').slideDown();
+		}else{
+			$('#rasgospatient').slideUp();
+		}
+	});
+	$('.dateyearpicker').datepicker({
+	      changeMonth: true,
+	      changeYear: true
+	});
+	$('#formpatient').find('input[name=patientchar]').tagsInput({
+    	'defaultText':'{{ lang('add')~'...' }}',
+    	'removetagText':'{{ lang('delete')}}',
+    });
 });
 </script>
 {% endblock %}
