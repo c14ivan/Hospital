@@ -67,7 +67,7 @@
 <div class="row-fluid">
     <div class="box span12">
         <div class="box-header well" data-original-title>
-            <h2><i class="iconh-searchpatient"></i> {{ lang('currentpatients') }}</h2>
+            <h2><i class="iconh-searchpatient"></i>{% if justhospitalized %}{{ lang('patients_hospitalized') }}{%else %}{{ lang('currentpatients') }} {% endif %}</h2>
         </div>
         <div class="box-content" id="patientinfo">
         <table id="patientstable" class="table table-striped table-bordered bootstrap-datatable tabledata">
@@ -164,10 +164,6 @@ $().ready(function(){
         },
     });
     
-	$('#formpatient').submit(function(e){
-		e.preventDefault();
-		console.log($(this).serializeObject());
-	});
 	$('.dateyearpicker').datepicker({
 	      changeMonth: true,
 	      changeYear: true
@@ -223,6 +219,7 @@ $().ready(function(){
             type:"POST",
             url: '{{ site_url('patients/loadpatients') }}',
             dataType:'json',
+            data:{hospitalized: {% if justhospitalized is defined %}1{% else %}0{% endif %} },
             error:function (jqXHR, textStatus, errorThrown) {
                 console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
             }
@@ -233,7 +230,8 @@ $().ready(function(){
 
             	room=(data.patients[i].roomnumber)?data.patients[i].unitname+':'+data.patients[i].roomnumber:'{{ lang('noasign') }}';
             	prioritylabel=labelpriority(data.patients[i].priority);
-            	patientstable.fnAddData( [htmlact,data.patients[i].lastname,data.patients[i].name,data.patients[i].patid,room,data.patients[i].entrancedate,prioritylabel] );
+            	ident=(data.patients[i].patid.trim().length>0)?data.patients[i].patid:data.patients[i].chars;
+            	patientstable.fnAddData( [htmlact,data.patients[i].lastname,data.patients[i].name,ident,room,data.patients[i].entrancedate,prioritylabel] );
             }
             dom_tablepatients();
         });

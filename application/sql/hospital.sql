@@ -36,11 +36,14 @@ DROP TABLE IF EXISTS `h_diagnosis`;
 
 CREATE TABLE `h_diagnosis` (
   `diagnosisid` int(11) NOT NULL AUTO_INCREMENT,
+  `atentionid` bigint(11) DEFAULT NULL,
+  `roomid` bigint(11) DEFAULT NULL,
   `symptoms` text,
   `treatment` text,
   `doctor` int(11) DEFAULT NULL,
+  `diagnosistime` datetime NOT NULL,
   PRIMARY KEY (`diagnosisid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `h_atention`;
 
@@ -54,6 +57,8 @@ CREATE TABLE `h_atention` (
   `familiar_phone` varchar(100) DEFAULT NULL,
   `insurance` varchar(45) DEFAULT NULL,
   `payment_method` varchar(45) DEFAULT NULL,
-  `priority` bigint(10) DEFAULT NULL,
+  `priority` tinyint(2) DEFAULT '0',
+  `status` tinyint(2) DEFAULT '0',
+  `doctor` bigint(10) DEFAULT NULL,
   PRIMARY KEY (`atentionid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;

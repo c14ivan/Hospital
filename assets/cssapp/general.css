@@ -89,13 +89,18 @@ ul.wide-list li .action {
 .iconh-rooms{
 	background-image: url("../imgapp/hospital/bed.png");
 }
+.iconh-roomasign{
+    background-image: url("../imgapp/hospital/patientbed.png");
+}
 .iconh-diet{
 	background-image: url("../imgapp/hospital/food.png");
 }
 .iconh-inventory{
 	background-image: url("../imgapp/hospital/first_aid.png");
 }
-
+.iconh-triage{
+	background-image: url("../imgapp/hospital/ecg_chart.png");
+}
 .loader1{
 	background-repeat: no-repeat;
 	width: 17px;
@@ -107,6 +112,13 @@ ul.wide-list li .action {
     width: 16px;
     height: 16px;
     background-image: url("../img/ajax-loaders/ajax-loader-2.gif");
+}
+.triagelevel{
+	width:80px;
+	height:16px;
+	text-align:center;
+	color:#000000;
+	padding:3px;
 }
 .label-yelow{
 	background-color: #F4FA58;

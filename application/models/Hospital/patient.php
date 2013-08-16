@@ -32,11 +32,30 @@ class Patient extends CI_Model{
         }
         return $response;
     }
+    function currentAtended($doctorid){
+        $this->db->where('doctor',$doctorid);
+        $this->db->where('status',0);
+        $query=$this->db->get($this->tableatention);
+        $response=false;
+        if ($query->num_rows() > 0){
+            $response = $query->row();
+        }
+        return $response;
+    }
     function currentAtention($patid){
         $this->db->select("atentionid,entrancedate,roomnumber,familiar,familiar_phone,insurance,priority,payment_method,{$this->tableunits}.name as unitname");
         $this->db->where('patientid',$patid);
         $this->db->join($this->tablerooms,"{$this->tableatention}.roomid={$this->tablerooms}.roomid","LEFT");
         $this->db->join($this->tableunits,"{$this->tablerooms}.unitid={$this->tableunits}.unitid","LEFT");
+        $query=$this->db->get($this->tableatention);
+        $response=false;
+        if ($query->num_rows() > 0){
+            $response = $query->row();
+        }
+        return $response;
+    }
+    function getAtention($atentionid){
+        $this->db->where('atentionid',$atentionid);
         $query=$this->db->get($this->tableatention);
         $response=false;
         if ($query->num_rows() > 0){
@@ -112,11 +131,23 @@ class Patient extends CI_Model{
             return false;
         }
     }
-    function getpatientsinatention(){
-        $this->db->select("{$this->tableatention}.patientid,{$this->tablepatients}.name,lastname,patid,entrancedate,priority,roomnumber,{$this->tableunits}.name as unitname");
+    /**
+     * 
+     * @param number $hospitalized if this is zero then returns all patients in atention
+     *                             where it's one then return the hospitalized patients
+     *                             where it's two then return just the triage patients
+     * @return boolean
+     */
+    function getpatientsinatention($hospitalized=0){
+        $this->db->select("{$this->tableatention}.patientid,{$this->tablepatients}.name,lastname,patid,chars,entrancedate,priority,roomnumber,{$this->tableunits}.name as unitname");
         $this->db->join($this->tableatention,"{$this->tableatention}.patientid={$this->tablepatients}.patientid AND {$this->tableatention}.status=0","INNER");
         $this->db->join($this->tablerooms,"{$this->tableatention}.roomid={$this->tablerooms}.roomid","LEFT");
         $this->db->join($this->tableunits,"{$this->tablerooms}.unitid={$this->tableunits}.unitid","LEFT");
+        if($hospitalized==1){
+            $this->db->where("{$this->tableatention}.roomid IS NOT NULL");
+        }elseif($hospitalized==2){
+            $this->db->where("{$this->tableatention}.roomid IS NULL");
+        }
         $query=$this->db->get($this->tablepatients);
         if($query->num_rows()>0){
             return $query->result_array();
@@ -128,5 +159,60 @@ class Patient extends CI_Model{
         $this->db->where('atentionid', $atentionid);
         $this->db->update($this->tableatention, $attrs);
         return ($this->db->affected_rows()==1)?true:false;
+    }
+    function asignDoctor($atentionid,$doctorid){
+        $this->db->update($this->tableatention, array('doctor'=>$doctorid));
+        return ($this->db->affected_rows()==1)?true:false;
+    }
+    function diagnosis($atentionid,$symptoms,$treatment,$doctor,$room){
+        $this->db->where('atentionid',$atentionid);
+        $this->db->where('roomid',$room);
+        $queryprev=$this->db->get($this->tableadiagnosis);
+        if($queryprev->num_rows()>0){
+            return false;
+        }else{
+            $data=array(
+                    'atentionid'=>$atentionid,
+                    'roomid'=>$room,
+                    'symptoms'=>$symptoms,
+                    'treatment'=>$treatment,
+                    'doctor'=>$doctor,
+                    'diagnosistime'=>date('Y-m-d H:i:s'),
+            );
+            if($this->db->insert($this->tableadiagnosis, $data)){
+                return $this->db->insert_id();
+            }
+            return false;
+        }
+    }
+    function getAvailableRoom($unitid,$roomtype){
+        //obtener los cuartos ocupados con las caracteristicas dadas
+        $this->db->select("{$this->tablerooms}.roomid,{$this->tablerooms}.roomnumber");
+        $this->db->join($this->tableatention,"{$this->tableatention}.status=0 AND {$this->tableatention}.roomid = {$this->tablerooms}.roomid");
+        $this->db->join($this->tableunits,"{$this->tableunits}.unitid={$this->tablerooms}.unitid");
+        $this->db->where("{$this->tableunits}.unitid",$unitid);
+        $this->db->where("{$this->tablerooms}.roomtype",$roomtype);
+        $query=$this->db->get($this->tablerooms);
+        $busyrooms=array();
+        if($query->num_rows()>0){
+            $busyrooms=$query->result_array();
+        }
+        $roomsnotin=array();
+        foreach ($busyrooms as $busyroom){
+            $roomsnotin[]=$busyroom['roomid'];
+        }
+        $this->db->select("{$this->tablerooms}.roomid,{$this->tablerooms}.roomnumber");
+        $this->db->join($this->tableunits,"{$this->tableunits}.unitid={$this->tablerooms}.unitid");
+        $this->db->where("{$this->tableunits}.unitid",$unitid);
+        $this->db->where("{$this->tablerooms}.roomtype",$roomtype);
+        if(!empty($roomsnotin)){
+            $this->db->where_not_in("{$this->tablerooms}.roomid",$roomsnotin);
+        }
+        $queryavailable=$this->db->get($this->tablerooms);
+        if($queryavailable->num_rows()>0){
+            return $queryavailable->row();
+        }else{
+            return false;
+        }
     }
 }

@@ -1,0 +1,319 @@
+{% extends '_layouts/index.html.twig' %}
+{% block headext %}
+    {{ css('jquery.tagsinput.css') }}
+{% endblock %}
+{% block content %}
+{% import '_tools/formElements.twig' as forms %}
+<div class="row-fluid">
+    <div class="box span12">
+        <div class="box-content" id="patientinfo" style="display:none;">
+            <div class="span6">
+                <div class="roomresult span12" style="display:none;">
+                    <a class="well span12 top-block" href="#" >
+    					<span class="iconh-roomasign"></span>
+    					<div>{{ lang('roomasigned') }}</div>
+    					<div id="roomasigned"></div>
+    				</a>
+                </div>
+                <div class="endatention span12 center" style="display:none;">
+                    <button class="btn btn-large btn-primary endatentionbtn">{{ lang('endpatientatention') }}</button>
+                </div>
+                <form id="patientatention" class="form-horizontal" method="post">
+                    <fieldset>
+                        {{ forms.legend({'name':lang('patientatendpatient')}) }}
+                        {{ forms.campo({'tipo':'input','type':'hidden','name':'atentionid','value':0}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'entrancedate','label':lang('entrancedate'),'maxlength':25,'extra':'readonly'}) }}
+                        {% set prioroptions= config.hospital.triagelevels %}
+                        {% set priors={} %}
+                        {% for key,val in prioroptions %}
+                            {% set priors=priors|merge({(key):'<span class="label triagelevel '~val.color~'">'~val.name~'</span>'}) %}
+                        {% endfor %}
+                        <div class="patientdiagnosis">
+                            {{ forms.legend({'name':lang('patient_diagnosis')}) }}
+                            {{ forms.campo({'tipo':'textarea','label':lang('patient_symptoms'),'name':'symptoms','value':''}) }}
+                            {{ forms.campo({'tipo':'textarea','label':lang('patient_treatment'),'name':'treatment','value':''}) }}
+                        </div>
+                        {{ forms.campo({'tipo':'input','type':'radio','name':'priority','label':lang('priority'),'opciones':priors}) }}
+                        
+                        {{ forms.campo({'tipo':'input','type':'checkbox','name':'tohospital',label:lang('patienttohospital'),'id':'pattohosp','value':'ok'}) }}
+                        <div class="patienthospitalization" style="display:none;">
+                            {{ forms.legend({'name':lang('hospitalizationdata')}) }}
+                            {{ forms.campo({'tipo':'select','name':'unit','label':lang('unit'),'opciones':units}) }}
+                            {{ forms.campo({'tipo':'select','name':'roomtype','label':lang('roomtype'),'opciones':roomtypes}) }}
+                        </div>
+                        
+                    </fieldset>
+                    <div class="form-actions">
+                        <button type="submit" name="submit" class="btn btn-primary" value="send">{{ lang('send') }}</button>
+                    </div>
+                </form>
+            </div>
+            <div class="span6">
+                <form id="formpatient" class="form-horizontal" method="post">
+                    <fieldset>
+                        {{ forms.legend({'name':lang('patient_infobasica') }) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'patid','label':lang('patientid'),'maxlength':25,'extra':'readonly'}) }}
+                        {{ forms.campo({'tipo':'input','type':'hidden','name':'patientid','value':0,'extra':'readonly'}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'names','label':lang('patientnames'),'extra':'readonly'}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'lastnames','label':lang('patientlastnames'),'extra':'readonly'}) }}
+                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'male':lang('male'),'female':lang('female')},'extra':'disabled' }) }}
+                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'},'extra':'disabled' }) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'address','label':lang('patientaddress'),'maxlength':50,'extra':'readonly'}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','class':'dateyearpicker','name':'bornday','label':lang('patientbornday'),'extra':'readonly'}) }}
+                        {{ forms.campo({'tipo':'input','type':'text','name':'patientchar','label':lang('patientchar')}) }}
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row-fluid patienttablecontainer">
+    <div class="box span12">
+        <div class="box-header well" data-original-title>
+            <h2><i class="iconh-searchpatient"></i> {{ lang('patients/triageatention') }}</h2>
+        </div>
+        <div class="box-content" id="patientinfo">
+        <table id="patientstable" class="table table-striped table-bordered bootstrap-datatable tabledata">
+            <thead>
+                <tr>
+                    <th>{{ lang('patientview') }}</th>
+                    <th>{{ lang('patientlastnames') }}</th>
+                    <th>{{ lang('patientnames') }}</th>
+                    <th>{{ lang('patientid') }}</th>
+                    <th>{{ lang('roomid') }}</th>
+                    <th>{{ lang('entrancedate') }}</th>
+                    <th>{{ lang('priority') }}</th>
+                </tr>
+            </thead>
+        </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block jscode %}
+{{ js('jquery.tagsinput.js') }}
+<script type="text/javascript">
+$().ready(function(){
+	var prioroptions = {{ config.hospital.triagelevels|json_encode() }};
+
+	$('.endatentionbtn').click(function(){
+		location.reload();
+	});
+	$('#pattohosp').change(function(){
+		if($(this).is(':checked')){
+			$('.patienthospitalization').slideDown();
+		}else{
+			$('.patienthospitalization').slideUp();
+		}
+	});
+	$('#formpatient').submit(function(e){
+		e.preventDefault();
+		//mejor hacer post
+		if($(this).find('input[name=patid]').val().length==0 &&
+				$(this).find('input[name=names]').val().length==0 &&
+				$(this).find('input[name=lastnames]').val().length==0 &&
+				$(this).find('input[name=patientchar]').val().length==0){
+			showNotification('{{ lang('patientmoreinfo') }}');
+		}else{
+			$.ajax({
+	            type:"POST",
+	            url: '{{ site_url('patients/updatepatientinfo') }}',
+	            dataType:'json',
+	            data:$(this).serializeObject(),
+	            error:function (jqXHR, textStatus, errorThrown) {
+	                console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
+	            }
+	        }).done(function (data) {
+	            if(data.ok){
+	            	showNotification('{{ lang('ajaxok') }}');
+	            }else{
+	            	showNotification('{{ lang('operationfails') }}');
+	            }
+	        });
+		}
+	});
+	$('#patientatention').validate({
+		errorClass:'errorlabelform',
+	    elErrorClass:'errorlabel',
+	    ignore:':hidden.chzn',
+	    rules:{
+	    	symptoms:{required: true,minlength:5,},
+	    	treatment:{required: true,minlength:5,},
+	    },
+	    messages:{
+	    	symptoms:{
+	    		required: '{{ lang('required')|format('')}}',
+	    		minlength: '{{ lang('min_length')|format('',5)}}',
+	    		
+	    	},
+	    	treatment:{
+	    		required: '{{ lang('required')|format('')}}',
+	    		minlength: '{{ lang('min_length')|format('',5)}}',
+	    		
+	    	},
+	    },
+	    submitHandler: function(form) {
+	    	$.ajax({
+	            type:"POST",
+	            url: '{{ site_url('patients/diagnosepatient') }}',
+	            dataType:'json',
+	            data:$(form).serializeObject(),
+	            error:function (jqXHR, textStatus, errorThrown) {
+	                console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
+	            }
+	        }).done(function (data) {
+		            roomhtml='';
+		            if(data.needroom){
+    		            if(!data.room){
+    		            	showNotification('{{ lang('noroomavailable') }}');
+    		            	$('#roomasigned').html('{{ lang('noroomavailable') }}');
+    			        }
+    		            if(data.room){
+    		            	$('#roomasigned').html(data.room.roomnumber);
+    		            	$('.roomresult').slideDown();
+    		            	$('form#patientatention').slideUp();
+    		            	$('.endatention').slideDown();
+    			        }
+		            }else if (data.ok){
+		            	showNotification('{{ lang('ajaxok') }}');
+		            	$('form#patientatention').slideUp();
+		            	$('.endatention').slideDown();
+			        }else{
+			            showNotification('{{ lang('operationfails') }}');
+			        }
+	        });
+	    }
+	});
+	
+	var patientstable=$('#patientstable').dataTable({
+        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span12'i><'span12 center'p>>",
+        "sPaginationType": "bootstrap",
+        "oLanguage": {
+            "sProcessing": "{{ lang('table_processing') }}",
+            "sLengthMenu": "{{ lang('table_recordsperpage') }}",
+            "sZeroRecords": "{{ lang('table_noregisters') }}",
+            "sEmptyTable": "{{ lang('table_empty') }}",
+            "sInfo": "{{ lang('table_pager') }}",
+            "sInfoEmpty": "{{ lang('table_pagerempty') }}",
+            "sInfoFiltered": "{{ lang('table_filtered') }}",
+            "sSearch": "{{ lang('table_search') }}",
+            "sLoadingRecords": "{{ lang('table_loading') }}",
+            "oAria": {
+                "sSortAscending": "{{ lang('table_sortAsc') }}",
+                "sSortDescending": "{{ lang('table_sortDesc') }}",
+            },
+            "oPaginate": {
+                "sFirst": "{{ lang('table_first') }}",
+                "sLast": "{{ lang('table_last') }}",
+                "sNext": "{{ lang('table_next') }}",
+                "sPrevious": "{{ lang('table_previous') }}",
+            },
+        },
+    });
+    
+	$('.dateyearpicker').datepicker({
+	      changeMonth: true,
+	      changeYear: true
+	});
+	$('#formpatient').find('input[name=patientchar]').tagsInput({
+    	'defaultText':'{{ lang('add')~'...' }}',
+    	'removetagText':'{{ lang('delete')}}',
+    	'interactive':false
+    });
+    function loadpatientatention(patientid){
+    	$.ajax({
+            type:"POST",
+            url: '{{ site_url('patients/atendpatient') }}',
+            dataType:'json',
+            data:{patient:patientid},
+            error:function (jqXHR, textStatus, errorThrown) {
+                console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
+            }
+        }).done(function (data) {
+        	$('#formpatient').find('input[name=patid]').val(data.basicinfo.patid);
+        	$('#formpatient').find('input[name=patientid]').val(data.basicinfo.patientid);
+        	$('#formpatient').find('input[name=names]').val(data.basicinfo.name);
+        	$('#formpatient').find('input[name=lastnames]').val(data.basicinfo.lastname);
+        	$('#formpatient').find('input[name=address]').val(data.basicinfo.address);
+        	$('#formpatient').find('input[name=bornday]').val(data.basicinfo.bornday);
+        	chars=data.basicinfo.chars.split(',');
+            for (i in chars){
+                $('#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}','norem':true});
+            }
+            
+            $('#patientatention').find('input[name=atentionid]').val(data.atentioninfo.atentionid);
+        	$('#patientatention').find('input[name=entrancedate]').val(data.atentioninfo.entrancedate);
+            
+        	$('#patientinfo').slideDown();
+        	$('.patienttablecontainer').slideUp();
+        });
+    }
+    function dom_tablepatients(){
+        $('.view_pat').click(function(){
+        	loadpatientatention($(this).attr('data-id'));
+        });
+    }
+    function labelpriority(priority){
+    	prioritylabel='<span class="label triagelevel '+prioroptions[priority].color+'">'+prioroptions[priority].name+'</span>';
+    	return prioritylabel;
+    }
+    function loadcurrentpatients(){
+    	$.ajax({
+            type:"POST",
+            url: '{{ site_url('patients/loadpatients') }}',
+            dataType:'json',
+            data:{hospitalized: 2 },
+            error:function (jqXHR, textStatus, errorThrown) {
+                console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
+            }
+        }).done(function (data) {
+        	patientstable.fnClearTable();
+        	for (i in data.patients){
+            	htmlact='<a class="btn btn-info view_pat" data-id="'+data.patients[i].patientid+'" href="javascript:void(0)"> <i class="icon-eye-open icon-white " title="{{ lang('patientview') }}"></i></a>';
+
+            	room=(data.patients[i].roomnumber)?data.patients[i].unitname+':'+data.patients[i].roomnumber:'{{ lang('noasign') }}';
+            	prioritylabel=labelpriority(data.patients[i].priority);
+            	ident=(data.patients[i].patid.trim().length>0)?data.patients[i].patid:data.patients[i].chars;
+            	patientstable.fnAddData( [htmlact,data.patients[i].lastname,data.patients[i].name,ident,room,data.patients[i].entrancedate,prioritylabel] );
+            }
+            dom_tablepatients();
+        });
+    }
+	function loadpatient(patientid){
+    		$('#patientinfo').css('display','none');
+    		
+    		$.ajax({
+                type:"POST",
+                url: '{{ site_url('patients/loadpatient') }}',
+                dataType:'json',
+                data: {'patientid':patientid},
+                error:function (jqXHR, textStatus, errorThrown) {
+                    console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
+                }
+            }).done(function (data) {
+                if(data.patient){
+                	$('#formpatient').find('input[name=patientid]').val(data.patient.patientid);
+                    $('#formpatient').find('input[name=names]').val(data.patient.name);
+                    $('#formpatient').find('input[name=lastnames]').val(data.patient.lastname);
+                    $('#formpatient').find('select[name=gender]').find('option').removeAttr('selected').find('option[value='+data.patient.gender+']').attr('selected',true);
+                    $('#formpatient').find('select[name=rh]').find('option').removeAttr('selected').find('option[value='+data.patient.rh+']').attr('selected',true);
+                    $('#formpatient').find('input[name=address]').val(data.patient.address);
+                    $('#formpatient').find('input[name=bornday]').val(data.patient.bornday);
+
+                    chars=data.patient.chars.split(',');
+                    for (i in chars){
+                        $('form#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}'});
+                    }
+                    $('#patientinfo').slideDown();
+                }else{
+                	showNotification('{{ lang('patientnotfound') }}');
+                }
+            });
+	}
+	loadcurrentpatients();
+	{% if currentpatient %}
+        loadpatientatention({{ currentpatient }});
+	{% endif %}
+});
+</script>
+{% endblock %}
