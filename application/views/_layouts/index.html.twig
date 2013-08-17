@@ -5,13 +5,13 @@
 <html lang="{{ config.language }}">
 <head>
     <meta charset="utf-8">
-    <title>{{ config.appname }}</title>
+    <title>{{ config.apptitle }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Charisma, a fully featured, responsive, HTML5, Bootstrap admin template.">
     <meta name="author" content="Muhammad Usman">
 
     <!-- The styles -->
-    <link id="bs-css" href="{{ css_url() }}bootstrap-cerulean.css" rel="stylesheet">
+    <link id="bs-cssnochangue" href="{{ css_url() }}bootstrap-classic.css" rel="stylesheet">
     <style type="text/css">
         body {
             padding-bottom: 40px;
@@ -43,7 +43,7 @@
     <![endif]-->
 
     <!-- The fav icon -->
-    <link rel="shortcut icon" href="{{ img_url() }}favicon.ico">
+    <link rel="shortcut icon" href="{{ img_url() }}favicon.png">
 {% block headext %}
 {% endblock %}
 </head>
@@ -54,13 +54,18 @@
 <div class="navbar">
     <div class="navbar-inner">
         <div class="container-fluid">
+            <!-- app title starts -->
+            <div class="btn-group pull-left" style="align:bottom">
+                <h4><img src="{{ asset_url()~'img/logo.png' }}" style="max-height: 100px;max-width:30%;" /><span class="hidden-phone hidden-tablet">{{ config.appname }}</span></h4>
+            </div><!--/.nav-collapse -->
+            
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
             <!--<a class="brand" href="index.html"> <img alt="Charisma Logo" src="img/logo20.png" /> <span>Charisma</span></a>-->
 
-            <!-- theme selector starts -->
+            <!-- theme selector starts
             <div class="btn-group pull-right theme-container" >
                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="icon-tint"></i><span class="hidden-phone"> Change Theme / Skin</span>
@@ -77,7 +82,7 @@
                     <li><a data-value="spacelab" href="#"><i class="icon-blank"></i> Spacelab</a></li>
                     <li><a data-value="united" href="#"><i class="icon-blank"></i> United</a></li>
                 </ul>
-            </div>
+            </div> -->
             <!-- theme selector ends -->
             <!-- user dropdown starts -->
             <div class="btn-group pull-right" >
@@ -98,18 +103,6 @@
                     <i class="icon-globe"></i><span class="hidden-phone"> {{ lang('starttour') }}</span>
                 </a>
             </div>
-            <!-- user dropdown ends -->
-
-            <div class="top-nav nav-collapse">
-                <ul class="nav">
-                    <!--<li><a href="#">Visit Site</a></li>-->
-                    <li>
-                        <form class="navbar-search pull-left">
-                            <input placeholder="Buscar" class="search-query span2" name="query" type="text">
-                        </form>
-                    </li>
-                </ul>
-            </div><!--/.nav-collapse -->
         </div>
     </div>
 </div>

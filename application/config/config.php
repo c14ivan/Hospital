@@ -25,12 +25,13 @@
  * @filesource
  */
 
-$config['appname']	= 'Great Hospital';
-$config['company']	= 'Great Hospital';
-$config['twitter_profile'] = 'https://twitter.com/ivanJespitia';
-$config['fb_profile'] = 'https://twitter.com/ivanJespitia';
-$config['gplus_profile'] = 'https://twitter.com/ivanJespitia';
-$config['email_info'] = 'c14ivan.javier@gmail.com';
+$config['appname']	= 'Sistematización del proceso de atención de pacientes de la clínica reina Sofía';
+$config['apptitle']	= 'SIAP';
+$config['company']	= 'SIAP';
+//$config['twitter_profile'] = 'https://twitter.com/ivanJespitia';
+//$config['fb_profile'] = 'https://twitter.com/ivanJespitia';
+//$config['gplus_profile'] = 'https://twitter.com/ivanJespitia';
+$config['email_info'] = 'ean.greathospital@gmail.com';
 /*
 |--------------------------------------------------------------------------
 | Base Site URL

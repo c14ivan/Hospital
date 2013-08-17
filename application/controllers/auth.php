@@ -1,7 +1,7 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 //TODO profile page
-class Auth extends MY_Controller
+class Auth extends CI_Controller
 {
     function __construct()
     {
@@ -604,14 +604,31 @@ class Auth extends MY_Controller
      */
     function _send_email($type, $email, &$data)
     {
-        $this->load->library('email');
-        $this->email->from($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('appname'));
-        $this->email->reply_to($this->config->item('webmaster_email', 'tank_auth'), $this->config->item('appname'));
+        $from=$this->config->item('email_info');
+        $fromapp=$this->config->item('appname');
+        $subject=sprintf($this->lang->line('auth_subject_'.$type), $this->config->item('appname'));
+        $content=$this->twig->getDisplay('email/'.$type.'_html', $data);
+        
+        $config = Array(
+                'protocol' => 'smtp',
+                'smtp_host' => 'ssl://smtp.gmail.com',
+                'smtp_port' => 465,
+                'smtp_user' => 'ean.greathospital@gmail.com',
+                'smtp_pass' => 'Admin123.',
+                'mailtype'  => 'html',
+                'charset'   => 'utf-8'
+        );
+        $this->email->initialize($config);
+        
+        $this->email->from($from, $fromapp);
+        $this->email->reply_to($from, $fromapp);
         $this->email->to($email);
-        $this->email->subject(sprintf($this->lang->line('auth_subject_'.$type), $this->config->item('appname')));
-        $this->email->message($this->twig->getDisplay('email/'.$type.'_html', $data));
-        $this->email->set_alt_message($this->twig->getDisplay('email/'.$type.'_txt', $data));
-        $this->email->send();
+        $this->email->subject($subject);
+        $this->email->message($content);
+        $this->email->set_alt_message($content);
+        $resp=$this->email->send();
+        
+        $debug=$this->email->print_debugger();
     }
 
     /**

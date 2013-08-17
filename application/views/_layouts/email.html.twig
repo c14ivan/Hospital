@@ -455,7 +455,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateHeader">
                                         <tr>
                                             <td valign="top" class="headerContent">
-                                            	<img src="{{ asset_url()~'imgapp/emaillogo.jpg' }}" style="max-width:600px;" />
+                                            	<img src="{{ asset_url()~'imgapp/emaillogo.png' }}" style="max-width:600px;" />
                                             </td>
                                         </tr>
                                     </table>
@@ -483,20 +483,26 @@
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" id="templateFooter">
                                         <tr>
                                             <td valign="top" class="footerContent" mc:edit="footer_content00">
-                                                <a href="{{ config.twitter_profile }}">
-                                                    <img src="{{ asset_url()~'imgapp/twitter.jpg' }}" style="max-width:600px;" /> Follow on Twitter
-                                                </a>
-                                                <a href="{{ config.fb_profile }}">
-                                                    <img src="{{ asset_url()~'imgapp/facebook.jpg' }}" style="max-width:600px;" /> Friend on Facebook
-                                                </a>
-                                                <a href="{{ config.gplus_profile }}">
-                                                    <img src="{{ asset_url()~'imgapp/gplus.jpg' }}" style="max-width:600px;" /> Follow on google Plus
-                                                </a>
+                                                {% if config.twitter_profile is defined %}
+                                                    <a href="{{ config.twitter_profile }}">
+                                                        <img src="{{ asset_url()~'imgapp/twitter.jpg' }}" style="width:64px;height:64px;" /> Follow on Twitter
+                                                    </a>
+                                                {% endif %}
+                                                {% if config.fb_profile is defined %}
+                                                    <a href="{{ config.fb_profile }}">
+                                                        <img src="{{ asset_url()~'imgapp/facebook.jpg' }}" style="width:64px;height:64px;" /> Friend on Facebook
+                                                    </a>
+                                                {% endif %}
+                                                {% if config.gplus_profile is defined %}
+                                                    <a href="{{ config.gplus_profile }}">
+                                                        <img src="{{ asset_url()~'imgapp/gplus.jpg' }}" style="width:64px;height:64px;" /> Follow on google Plus
+                                                    </a>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                         <tr>
                                             <td valign="top" class="footerContent" style="padding-top:0;" mc:edit="footer_content01">
-                                                <em>Copyright &copy; {{ date('Y') }} {{ config.company }}, All rights reserved.</em>
+                                                <em>Copyright &copy; {{ "now"|date('Y') }} {{ config.company }}, All rights reserved.</em>
                                                 <br />
                                                 <br />
                                                 <strong>Our mailing address is:</strong>
