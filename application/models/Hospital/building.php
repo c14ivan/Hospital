@@ -13,6 +13,7 @@
 class Building extends CI_Model{
     private $tableunits='h_units';
     private $tablerooms='h_rooms';
+    private $tableatention='h_atention';
     
     function __construct()
     {
@@ -100,5 +101,24 @@ class Building extends CI_Model{
         $this->db->delete($this->tablerooms, array('roomid'=>$id));
         
         return ($this->db->affected_rows()==1)?true:false;
+    }
+    function getOcupation(){
+        $this->db->select("{$this->tableunits}.unitid,name,roomtype,count(roomtype) as total, count(atentionid) as busy");
+        $this->db->join($this->tableunits,"{$this->tablerooms}.unitid={$this->tableunits}.unitid","INNER");
+        $this->db->join($this->tableatention,"{$this->tableatention}.status=0 AND {$this->tableatention}.roomid={$this->tablerooms}.roomid","LEFT");
+        $this->db->group_by("name,roomtype");
+        $query=$this->db->get($this->tablerooms);
+        $data= $query->result_array();
+        $response=array();
+        foreach($data as $row){
+            if(!isset($response[$row['unitid']])){
+                $response[$row['unitid']]=array('name'=>$row['name'],'rooms'=>0,'busy'=>0,'roomtypes'=>array());
+            }
+            
+            $response[$row['unitid']]['rooms']+=$row['total'];
+            $response[$row['unitid']]['busy']+=$row['busy'];
+            $response[$row['unitid']]['roomtypes'][$row['roomtype']]=array('total'=>$row['total'],'busy'=>$row['busy']);
+        }
+        return $response;
     }
 }

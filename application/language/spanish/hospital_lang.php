@@ -56,3 +56,8 @@ $lang['tr_level3']="Nivel 3";
 $lang['tr_level4']="Nivel 4";
 $lang['tr_level5']="Nivel 5";
 $lang['updateinfo'] = "Actualizar Información";
+
+$lang['reportunits']="Disponibilidad de Unidades Funcionales";
+$lang['reportunits']="Disponibilidad de Cuartos";
+$lang['report_busy']="Cuartos Ocupados";
+$lang['report_free']="Cuartos Libres";

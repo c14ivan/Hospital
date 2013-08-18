@@ -73,8 +73,10 @@ class Hospital extends MY_Controller {
          
         $this->twig->display('general/table',$data);
     }
-    function inventory(){
-        
+    function roomreport(){
+        $data=$this->Building->getOcupation();
+        $roomtypesarr=$this->config->item('roomtypes', 'hospital');
+        $this->twig->display('hospital/ocupation',array('data'=>$data,'roomt'=>$roomtypesarr));
     }
     function editunit($unitid=0){
         $post=$this->input->post();

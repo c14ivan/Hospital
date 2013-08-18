@@ -101,6 +101,9 @@ ul.wide-list li .action {
 .iconh-triage{
 	background-image: url("../imgapp/hospital/ecg_chart.png");
 }
+.iconh-maletin{
+	background-image: url("../imgapp/hospital/maletin.png");
+}
 .loader1{
 	background-repeat: no-repeat;
 	width: 17px;
