@@ -22,8 +22,8 @@
                         {{ forms.campo({'tipo':'input','type':'hidden','name':'patientid','value':0}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'names','label':lang('patientnames')}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'lastnames','label':lang('patientlastnames')}) }}
-                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'male':lang('male'),'female':lang('female')} }) }}
-                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'} }) }}
+                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'-':'-','male':lang('male'),'female':lang('female')} }) }}
+                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'-':'-','A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'} }) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'address','label':lang('patientaddress'),'maxlength':50}) }}
                         {{ forms.campo({'tipo':'input','type':'text','class':'dateyearpicker','name':'bornday','label':lang('patientbornday')}) }}
                     </div>

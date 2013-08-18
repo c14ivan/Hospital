@@ -56,8 +56,8 @@
                         {{ forms.campo({'tipo':'input','type':'hidden','name':'patientid','value':0,'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'names','label':lang('patientnames'),'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'lastnames','label':lang('patientlastnames'),'extra':'readonly'}) }}
-                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'':lang('selectanoption'),'male':lang('male'),'female':lang('female')},'extra':'disabled' }) }}
-                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'':lang('selectanoption'),'A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'},'extra':'disabled' }) }}
+                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'':lang('selectanoption'),'-':'-','male':lang('male'),'female':lang('female')},'extra':'disabled' }) }}
+                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'':lang('selectanoption'),'-':'-','A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'},'extra':'disabled' }) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'address','label':lang('patientaddress'),'maxlength':50,'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','class':'dateyearpicker','name':'bornday','label':lang('patientbornday'),'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'patientchar','label':lang('patientchar')}) }}
