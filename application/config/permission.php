@@ -27,13 +27,11 @@ $config['permission']['menu_positions']=array('left-bar','top','bottom','mini-to
 
 //default roles to be created, could be created in the application
 $config['permission']['roles']=array(
-        array('name'=>'Superuser','weight'=>50,'shortname'=>'super','description'=>''),
         array('name'=>'Administrator','weight'=>40,'shortname'=>'admin','description'=>''),
         array('name'=>'Pharmacy','weight'=>30,'shortname'=>'pharmacy','description'=>''),
         array('name'=>'Doctor','weight'=>30,'shortname'=>'doctor','description'=>''),
         array('name'=>'Assistant','weight'=>30,'shortname'=>'assistant','description'=>''),
         array('name'=>'Diet','weight'=>10,'shortname'=>'diet','description'=>''),
-		array('name'=>'Visitor','weight'=>0,'shortname'=>'visitor','description'=>'')
         );
 // list of capabilities for the application. If a permission is not defined, the application
 // allows permission.
@@ -47,9 +45,9 @@ $config['permission']['capabilities']=array(
         'patients/register' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'assistant,admin,doctor','icon'=>'iconh-register'),
         'patients/patientstatus' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'assistant,admin,doctor','icon'=>'iconh-searchpatient'),
         'patients/diet' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,diet','icon'=>'iconh-diet'),
-        'patients/history' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,doctor','icon'=>'iconh-history'),
+        //'patients/history' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,doctor','icon'=>'iconh-history'),
         'patients/triageatention'=>array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,doctor','icon'=>'iconh-triage'),
-        'hospital/inventory' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,diet','icon'=>'iconh-inventory'),
+        //'hospital/inventory' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,diet','icon'=>'iconh-inventory'),
         'hospital/units' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin','icon'=>'iconh-building'),
         'hospital/rooms' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin','icon'=>'iconh-rooms'),
         );

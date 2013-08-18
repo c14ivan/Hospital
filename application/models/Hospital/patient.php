@@ -43,7 +43,7 @@ class Patient extends CI_Model{
         return $response;
     }
     function currentAtention($patid){
-        $this->db->select("atentionid,entrancedate,roomnumber,familiar,familiar_phone,insurance,priority,payment_method,{$this->tableunits}.name as unitname");
+        $this->db->select("atentionid,entrancedate,roomnumber,familiar,familiar_phone,doctor,insurance,priority,payment_method,{$this->tableunits}.name as unitname");
         $this->db->where('patientid',$patid);
         $this->db->join($this->tablerooms,"{$this->tableatention}.roomid={$this->tablerooms}.roomid","LEFT");
         $this->db->join($this->tableunits,"{$this->tablerooms}.unitid={$this->tableunits}.unitid","LEFT");

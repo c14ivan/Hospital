@@ -126,12 +126,17 @@ class Patients extends MY_Controller {
         $patientinfo=$this->Patient->loadpatient($patientid);
         $currentatention=$this->Patient->currentAtention($patientid);
         if($asign){
-            $atend=$this->Patient->asignDoctor($currentatention->atentionid,$this->session->userdata('user_id'));
+            if($currentatention->doctor>0){
+                $atend=false;
+                $asigned=false;
+            }else{
+                $atend=$this->Patient->asignDoctor($currentatention->atentionid,$this->session->userdata('user_id'));
+            }
         }else{
             $atend=true;
         }
         
-        echo json_encode(array('ok'=>$atend,'basicinfo'=>$patientinfo,'atentioninfo'=>$currentatention));
+        echo json_encode(array('ok'=>$atend,'prev'=>$asigned,'basicinfo'=>$patientinfo,'atentioninfo'=>$currentatention));
     }
     function diagnosepatient(){
         if(!$this->input->is_ajax_request()) redirect();

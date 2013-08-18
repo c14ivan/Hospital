@@ -56,8 +56,8 @@
                         {{ forms.campo({'tipo':'input','type':'hidden','name':'patientid','value':0,'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'names','label':lang('patientnames'),'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'lastnames','label':lang('patientlastnames'),'extra':'readonly'}) }}
-                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'male':lang('male'),'female':lang('female')},'extra':'disabled' }) }}
-                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'},'extra':'disabled' }) }}
+                        {{ forms.campo({'tipo':'select','name':'gender','label':lang('gender'),'opciones':{'':lang('selectanoption'),'male':lang('male'),'female':lang('female')},'extra':'disabled' }) }}
+                        {{ forms.campo({'tipo':'select','name':'rh','label':lang('bloodtype'),'opciones':{'':lang('selectanoption'),'A+':'A+','A-':'A-','B+':'B+','B-':'B-','AB+':'AB+','AB-':'AB-','O+':'O+','O-':'O-'},'extra':'disabled' }) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'address','label':lang('patientaddress'),'maxlength':50,'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','class':'dateyearpicker','name':'bornday','label':lang('patientbornday'),'extra':'readonly'}) }}
                         {{ forms.campo({'tipo':'input','type':'text','name':'patientchar','label':lang('patientchar')}) }}
@@ -230,27 +230,38 @@ $().ready(function(){
                 console.log(JSON.stringify(jqXHR) + ' ' + textStatus + '  ' + errorThrown);
             }
         }).done(function (data) {
-        	$('#formpatient').find('input[name=patid]').val(data.basicinfo.patid);
-        	$('#formpatient').find('input[name=patientid]').val(data.basicinfo.patientid);
-        	$('#formpatient').find('input[name=names]').val(data.basicinfo.name);
-        	$('#formpatient').find('input[name=lastnames]').val(data.basicinfo.lastname);
-        	$('#formpatient').find('input[name=address]').val(data.basicinfo.address);
-        	$('#formpatient').find('input[name=bornday]').val(data.basicinfo.bornday);
-        	if(data.basicinfo.chars!= null && data.basicinfo.chars.length>0){
-        	    chars=data.basicinfo.chars.split(',');
-                for (i in chars){
-                    $('#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}','norem':true});
-                }
-        	}
-            $('#patientatention').find('input[name=atentionid]').val(data.atentioninfo.atentionid);
-        	$('#patientatention').find('input[name=entrancedate]').val(data.atentioninfo.entrancedate);
-            
-        	$('#patientinfo').slideDown();
-        	$('.patienttablecontainer').slideUp();
+            if(data.ok){
+            	$('#formpatient').find('input[name=patid]').val(data.basicinfo.patid);
+            	$('#formpatient').find('input[name=patientid]').val(data.basicinfo.patientid);
+            	$('#formpatient').find('input[name=names]').val(data.basicinfo.name);
+            	$('#formpatient').find('input[name=lastnames]').val(data.basicinfo.lastname);
+            	$('#formpatient').find('input[name=address]').val(data.basicinfo.address);
+            	$('#formpatient').find('input[name=bornday]').val(data.basicinfo.bornday);
+            	if(data.basicinfo.chars!= null && data.basicinfo.chars.length>0){
+            	    chars=data.basicinfo.chars.split(',');
+                    for (i in chars){
+                        $('#formpatient').find('input[name=patientchar]').addTag(chars[i].trim(),{'removeText':'{{ lang('delete') }}','norem':true});
+                    }
+            	}
+                $('#patientatention').find('input[name=atentionid]').val(data.atentioninfo.atentionid);
+            	$('#patientatention').find('input[name=entrancedate]').val(data.atentioninfo.entrancedate);
+                
+            	$('#patientinfo').slideDown();
+            	$('.patienttablecontainer').slideUp();
+            }else if(data.asigned){
+            	showNotification('{{ lang('patientatended') }}');
+            	loadcurrentpatients();
+            }
         });
     }
     function dom_tablepatients(){
         $('.view_pat').click(function(){
+        	resetForm($('#formpatient'));
+            resetForm($('#patientstatus'));
+            $('#formpatient').find('input[name=patientid]').val(0);
+            $('#patientatention').find('input[name=atentionid]').val(0);
+            $('#formpatient').find('#patientchar').clearTag();
+            
         	loadpatientatention($(this).attr('data-id'),true);
         });
     }
