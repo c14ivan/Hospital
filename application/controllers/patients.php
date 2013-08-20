@@ -54,7 +54,7 @@ class Patients extends MY_Controller {
         $unitsarr=array();
         if(count($units)>0){
             foreach ($units as $unit){
-                $unitsarr[$unit['unitid']]=$unit['name'];
+                $unitsarr[$unit['id']]=$unit['name'];
             }
         }
         $currentpatient=$this->Patient->currentAtended($this->session->userdata('user_id'));
@@ -122,15 +122,16 @@ class Patients extends MY_Controller {
     function atendpatient(){
         if(!$this->input->is_ajax_request()) redirect();
         $patientid=$this->input->post('patient');
-        $asign=$this->input->post('asign');
+        $asign=$this->input->post('asign')=="false"?false:true;
         $patientinfo=$this->Patient->loadpatient($patientid);
         $currentatention=$this->Patient->currentAtention($patientid);
+        $asigned=false;
         if($asign){
             if($currentatention->doctor>0){
                 $atend=false;
-                $asigned=false;
             }else{
                 $atend=$this->Patient->asignDoctor($currentatention->atentionid,$this->session->userdata('user_id'));
+                $asigned=true;
             }
         }else{
             $atend=true;

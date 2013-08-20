@@ -18,7 +18,7 @@ if (!defined('CONTEXT_SUBMODULE')) {
 }
 
 // used to defined the mode of installation.
-$config['permission']['permissions_mode']='weight';//role,weight
+$config['permission']['permissions_mode']='role';//role,weight
 
 //default role for everybody in home
 $config['default-role']='visitor';

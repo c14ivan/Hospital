@@ -147,7 +147,7 @@ class Hospital extends MY_Controller {
         $unitsarr=array();
         if(count($units)>0){
             foreach ($units as $unit){
-                $unitsarr[$unit['unitid']]=$unit['name'];
+                $unitsarr[$unit['id']]=$unit['name'];
             }
         }
         $roomtypesarr=$this->config->item('roomtypes', 'hospital');

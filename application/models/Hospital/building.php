@@ -23,6 +23,7 @@ class Building extends CI_Model{
     }
     
     function getUnits(){
+        $this->db->select("{$this->tableunits}.unitid as id,{$this->tableunits}.name as name,{$this->tableunits}.description");
         $query=$this->db->get($this->tableunits);
         $response=array();
         if ($query->num_rows() > 0){
