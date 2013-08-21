@@ -13,9 +13,9 @@
     					<span class="iconh-roomasign"></span>
     					<div>{{ lang('roomasigned') }}</div>
     					<div id="roomasigned"></div>
-    					<div id="repolink"></div>
     				</a>
                 </div>
+				<div id="repolink" class="span12 center"></div>
                 <div class="endatention span12 center" style="display:none;">
                     <button class="btn btn-large btn-primary endatentionbtn">{{ lang('endpatientatention') }}</button>
                 </div>
@@ -164,6 +164,7 @@ $().ready(function(){
 	            }
 	        }).done(function (data) {
 		            roomhtml='';
+	            	$('#repolink').html(data.link);
 		            if(data.needroom){
     		            if(!data.room){
     		            	showNotification('{{ lang('noroomavailable') }}');
@@ -171,7 +172,6 @@ $().ready(function(){
     			        }
     		            if(data.room){
     		            	$('#roomasigned').html(data.room.roomnumber);
-    		            	$('#repolink').html(+data.url);
     		            	$('.roomresult').slideDown();
     		            	$('form#patientatention').slideUp();
     		            	$('.endatention').slideDown();

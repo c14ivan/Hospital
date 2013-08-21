@@ -195,7 +195,7 @@ class Patients extends MY_Controller {
         if($adddiagnosis){
             $okdiagnosis=$this->Patient->diagnosis($diagnosis['atentionid'],$diagnosis['symptoms'],$diagnosis['treatment'],$this->session->userdata('user_id'),$atention->roomid);
 
-            $url=anchor('patients/atentionreport/'.$okdiagnosis,lang('diagnosisreport'));
+            $url=anchor('patients/atentionreport/'.$okdiagnosis,lang('diagnosisreport'),array('target'=>"_blank"));
         }
         echo json_encode(array('ok'=>$adddiagnosis,'link'=>$url,'room'=>$room,'needroom'=>(isset($diagnosis['tohospital']))?$diagnosis['tohospital']:false,'diagnosisok'=>$okdiagnosis));
     }
