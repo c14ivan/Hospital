@@ -168,6 +168,15 @@ class Patient extends CI_Model{
         $this->db->update($this->tableatention, array('doctor'=>$doctorid));
         return ($this->db->affected_rows()==1)?true:false;
     }
+    function getDiagnosis($diagnosisid){
+        $this->db->where('diagnosisid',$diagnosisid);
+        $query=$this->db->get($this->tableadiagnosis);
+        if($query->num_rows()>0){
+            return $query->row();
+        }else{
+            return false;
+        }
+    }
     function diagnosis($atentionid,$symptoms,$treatment,$doctor,$room){
         $this->db->where('atentionid',$atentionid);
         $this->db->where('roomid',$room);

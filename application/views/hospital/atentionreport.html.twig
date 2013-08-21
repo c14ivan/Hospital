@@ -1,0 +1,27 @@
+{%  set config = get_config() %}
+<table >
+    <tr valign="middle">
+        <td><img src="{{ asset_url()~'imgapp/emaillogo.png' }}" style="height: 10mm;margin:0 auto;"  /></td>
+        <td colspan="2" style="text-align:center;"><h2>{{ config.appname }}</h2></td>
+    </tr>
+</table>
+<hr>
+<table border="1" cellpadding="3">
+    
+    <tr><td colspan="3" style="font-weight:bold;">Información Básica</td></tr>
+    <tr><td><b>Apellidos:</b> {{ patientinfo.lastname }}</td><td><b>Nombres:</b> {{ patientinfo.name }}</td><td><b>Identificación:</b> {{ patientinfo.patid }}</td></tr>
+    <tr><td><b>Dirección:</b> {{ patientinfo.address }}</td><td><b>Fecha de Nacimiento:</b> {{ patientinfo.bornday }}</td><td><b>Hora de entrada:</b> {{ atention.entrancedate }}</td></tr>
+    <tr><td colspan="3" style="font-weight:bold;">Diagnostico</td></tr>
+    <tr><td colspan="3" ><b>Sintomas:</b> {{ diagnosis.symptoms }}</td></tr>
+    <tr><td colspan="3" ><b>Tratamiento:</b> {{ diagnosis.treatment }}</td></tr>
+    <tr><td colspan="3" style="height:50mm;" valign="top"><b>Observaciones:</b></td></tr>
+</table>
+<br/>
+<br/>
+<br/>
+<br/>
+<table >
+    <tr>
+        <td colspan="2" ></td><td style="text-align:center;">______________________________<br/>{{ diagnosis.doctor.username }}</td>
+    </tr>
+</table>

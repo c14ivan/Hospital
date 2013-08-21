@@ -13,6 +13,7 @@
     					<span class="iconh-roomasign"></span>
     					<div>{{ lang('roomasigned') }}</div>
     					<div id="roomasigned"></div>
+    					<div id="repolink"></div>
     				</a>
                 </div>
                 <div class="endatention span12 center" style="display:none;">
@@ -170,6 +171,7 @@ $().ready(function(){
     			        }
     		            if(data.room){
     		            	$('#roomasigned').html(data.room.roomnumber);
+    		            	$('#repolink').html(+data.url);
     		            	$('.roomresult').slideDown();
     		            	$('form#patientatention').slideUp();
     		            	$('.endatention').slideDown();

@@ -23,7 +23,9 @@ class Patients extends MY_Controller {
         parent::__construct();
         $this->load->model('Hospital/Building');
         $this->load->model('Hospital/Patient');
+        $this->load->model('tank_auth/Users');
         $this->config->load('hospital');
+        $this->load->library('Pdf');
     }
     function register(){
         $patient=$this->input->post();
@@ -48,6 +50,36 @@ class Patients extends MY_Controller {
     }
     function diet(){
         $this->twig->display('hospital/patientstatus',array('nopayinfo'=>true,'nomodify'=>true,'justhospitalized'=>true));
+    }
+    function atentionreport(){
+        $diagnosisid=$this->uri->segment(3);
+        $diagnosis=$this->Patient->getDiagnosis($diagnosisid);
+        $atention=$this->Patient->getAtention($diagnosis->atentionid);
+        $patientinfo=$this->Patient->loadpatient($atention->patientid);
+        $diagnosis->doctor=$this->Users->get_user_by_id($diagnosis->doctor,true);
+        
+        $pdf = new Pdf('L', 'mm', 'A5', true, 'UTF-8', false);
+        $pdf->setPageOrientation('L');
+        $pdf->SetTitle(lang('diagnosisreporttitle'));
+        $pdf->SetTopMargin(10);
+        $pdf->SetAutoPageBreak(true);
+        $pdf->SetAuthor($this->config->item('apptitle'));
+        $pdf->SetDisplayMode('real', 'default');
+        $pdf->setPrintFooter(false);
+        $pdf->setPrintHeader(false);
+        
+        // set text shadow effect
+        //$pdf->setTextShadow(array('enabled'=>true, 'depth_w'=>0.2, 'depth_h'=>0.2, 'color'=>array(196,196,196), 'opacity'=>1, 'blend_mode'=>'Normal'));
+        // set font
+        //$pdf->SetFont('times', 'BI', 20);
+        $pdf->SetFont('dejavusans', '', 8, '', true);
+        // add a page
+        $pdf->AddPage('L', 'A5');
+        // Set some content to print
+        $html = $this->twig->getDisplay('hospital/atentionreport',array('patientinfo'=>$patientinfo,'atention'=>$atention,'diagnosis'=>$diagnosis));
+        // Print text using writeHTMLCell()
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf->Output('report.pdf', 'I');
     }
     function triageatention(){
         $units=$this->Building->getUnits();
@@ -108,6 +140,7 @@ class Patients extends MY_Controller {
         if(!$this->input->is_ajax_request()) redirect();
         $atention=$this->input->post();
         $res=false;
+        $data=array();
         if(!empty($atention)){
             $data=array(
                     'familiar'=>$atention['familiar'],
@@ -117,7 +150,7 @@ class Patients extends MY_Controller {
             );
             $res=$this->Patient->updateAtention($atention['atentionid'],$data);
         }
-        echo json_encode(array('ok'=>$res));
+        echo json_encode(array('ok'=>$res,'data'=>$data,'post'=>$atention));
     }
     function atendpatient(){
         if(!$this->input->is_ajax_request()) redirect();
@@ -145,6 +178,7 @@ class Patients extends MY_Controller {
         $atention=$this->Patient->getAtention($diagnosis['atentionid']);
         $adddiagnosis=true;
         $room=false;
+        $url='';
         if(isset($diagnosis['tohospital'])){//Si necesita hospitalizar se reasigna
             //buscar habitación:
             $room=$this->Patient->getAvailableRoom($diagnosis['unit'],$diagnosis['roomtype']);
@@ -160,8 +194,10 @@ class Patients extends MY_Controller {
         //agregar diagnostico
         if($adddiagnosis){
             $okdiagnosis=$this->Patient->diagnosis($diagnosis['atentionid'],$diagnosis['symptoms'],$diagnosis['treatment'],$this->session->userdata('user_id'),$atention->roomid);
+
+            $url=anchor('patients/atentionreport/'.$okdiagnosis,lang('diagnosisreport'));
         }
-        echo json_encode(array('ok'=>$adddiagnosis,'room'=>$room,'needroom'=>(isset($diagnosis['tohospital']))?$diagnosis['tohospital']:false,'diagnosisok'=>$okdiagnosis));
+        echo json_encode(array('ok'=>$adddiagnosis,'link'=>$url,'room'=>$room,'needroom'=>(isset($diagnosis['tohospital']))?$diagnosis['tohospital']:false,'diagnosisok'=>$okdiagnosis));
     }
 }
 

@@ -61,3 +61,6 @@ $lang['reportunits']="Disponibilidad de Unidades Funcionales";
 $lang['reportunits']="Disponibilidad de Cuartos";
 $lang['report_busy']="Cuartos Ocupados";
 $lang['report_free']="Cuartos Libres";
+
+$lang['diagnosisreport']="Ver Reporte";
+$lang['diagnosisreporttitle']="Resultado";
