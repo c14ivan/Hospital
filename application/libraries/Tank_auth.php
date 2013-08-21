@@ -499,9 +499,9 @@ class Tank_auth
 	{
 	    $user_id = $this->ci->session->userdata('user_id');
 	
-	    if (!is_null($user = $this->ci->users->get_user_by_id($user_id, TRUE))) {
+	    if (!is_null($user = $this->ci->users->get_user_by_id($userid, TRUE))) {
 	
-	        $this->ci->users->delete_user($user_id);
+	        $this->ci->users->delete_user($userid);
 	        if($user_id==$userid){
 	            $this->logout();
 	        }
