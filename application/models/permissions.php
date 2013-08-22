@@ -156,8 +156,9 @@ class Permissions extends CI_Model
         if($rol){
             foreach ($this->get_capabilities() as $cap){
                 $permission=0;
-                if(($capmode=='weight' && $rol->weight > $cap['weight']) || ($capmode=='role' && strpos($cap['roles'], $rol->shortname)>=0))
+                if(($capmode=='role' && strpos($cap['roles'], $rol->shortname)!==false)){
                     $permission=1;
+                }
                 $this->set_role_permission($rol->id,$cap['id'],$permission,$cap['position']);
             }
             return true;
@@ -170,7 +171,7 @@ class Permissions extends CI_Model
         $capabilities = $this->get_capabilities();
         foreach ($capabilities as $capability){
             $permission=0;
-            if(($capmode=='weight' && $role->weight > $capability['weight']) || ($capmode=='role' && strpos($capability['roles'], $role->shortname)>=0))
+            if(($capmode=='weight' && $role->weight > $capability['weight']) || ($capmode=='role' && strpos($capability['roles'], $role->shortname)!==false))
                 $permission=1;
             $this->set_role_permission($roleid,$capability['id'],$permission,$capability['position']);
         }

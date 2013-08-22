@@ -44,6 +44,7 @@ $config['permission']['capabilities']=array(
         'permission/enrolments' => array('weight'=>30, 'visible'=>false,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'super,admin'),
         'patients/register' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'assistant,admin,doctor','icon'=>'iconh-register'),
         'patients/patientstatus' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'assistant,admin,doctor','icon'=>'iconh-searchpatient'),
+        'patients/pharmacy' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'pharmacy','icon'=>'iconh-inventory'),
         'patients/diet' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,diet','icon'=>'iconh-diet'),
         'patients/triageatention'=>array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin,doctor','icon'=>'iconh-triage'),
         'hospital/units' => array('weight'=>30, 'visible'=>true,'position'=>'left-bar','ctx_level'=>CONTEXT_HOME,'roles'=>'admin','icon'=>'iconh-building'),

@@ -64,3 +64,4 @@ $lang['report_free']="Cuartos Libres";
 
 $lang['diagnosisreport']="Ver Reporte";
 $lang['diagnosisreporttitle']="Resultado";
+$lang['patientatended']="El paciente ya esta siendo atendido";
