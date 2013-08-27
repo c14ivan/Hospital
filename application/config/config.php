@@ -25,7 +25,7 @@
  * @filesource
  */
 
-$config['appname']	= 'Sistematización del proceso de atención de pacientes de la clínica reina Sofía';
+$config['appname']	= 'Sistema Integrado de Atención de Pacientes';
 $config['apptitle']	= 'SIAP';
 $config['company']	= 'SIAP';
 //$config['twitter_profile'] = 'https://twitter.com/ivanJespitia';

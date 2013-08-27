@@ -26,7 +26,7 @@
 			</div>
 		</div>
         <div class="box-content">
-            <div id="roomtypesreport" style="height:300px"></div>
+            <div id="roomtypesreport" style="min-height:300px"></div>
         </div>
     </div>
 </div>
@@ -35,23 +35,26 @@
 {{ js('jquery.flot.labeled.js') }}
 <script type="text/javascript">
 $().ready(function(){
-	var unitstotal = [];
-	var unitsbusy = [];
-	var unitlabels = [];
-	var rooms=[];
-	
-	{% for key,unit in data %}
-        unitstotal.push([{{ key }}, parseInt({{ unit.rooms }})]);
-        unitsbusy.push([{{ key }}, parseInt({{ unit.busy }})]);
-        if($('#roomtypesreport').find('.unit_{{ key }}').length==0){
-        	$('#roomtypesreport').append('<div class="span6 unit_{{ key }} style="height:280px;"><h2 style="text-align: center;">{{ unit.name }}<hr></h2><div class="content"></div>');
-        }
-	    {% for keyr,roomtype in unit.roomtypes %}
-            rooms['{{ keyr }}']=[{label:'{{ lang('report_busy')}}',data:parseInt({{ roomtype.busy }})},{label:'{{ lang('report_free')}}',data:parseInt({{ roomtype.total }})-parseInt({{ roomtype.busy }})}]
-            if($('#roomtypesreport').children('.unit_{{ key }}').children('.content').children('.room_{{ keyr }}').length==0){
-            	$('#roomtypesreport').children('.unit_{{ key }}').children('.content').append('<div class="span4 room_{{ keyr }}"><h4 style="text-align: center;">{{ roomt[keyr] }}<hr></h4><div class="graph" style="height:280px;"></div></div>');
+
+	var loadp=false;
+	function paint_gauges(){
+    	var unitstotal = [];
+    	var unitsbusy = [];
+    	var unitlabels = [];
+    	var rooms=[];
+    	$('#roomtypesreport').empty();
+    	{% for key,unit in data %}
+            unitstotal.push([{{ key }}, parseInt({{ unit.rooms }})]);
+            unitsbusy.push([{{ key }}, parseInt({{ unit.busy }})]);
+            if($('#roomtypesreport').find('.unit_{{ key }}').length==0){
+            	$('#roomtypesreport').append('<div class="span12 unit_{{ key }}" style="margin-left:0px;min-height:280px;"><h2 style="text-align: center;">{{ unit.name }}<hr></h2><div class="content"></div><hr/>');
             }
-            $.plot($('#roomtypesreport').children('.unit_{{ key }}').children('.content').children('.room_{{ keyr }}').children('.graph'), rooms['{{ keyr }}'],
+    	    {% for keyr,roomtype in unit.roomtypes %}
+                rooms['{{ keyr }}']=[{label:'{{ lang('report_busy')}}',data:parseInt({{ roomtype.busy }})},{label:'{{ lang('report_free')}}',data:parseInt({{ roomtype.total }})-parseInt({{ roomtype.busy }})}]
+                if($('#roomtypesreport').children('.unit_{{ key }}').children('.content').children('.room_{{ keyr }}').length==0){
+                	$('#roomtypesreport').children('.unit_{{ key }}').children('.content').append('<div class="span4 room_{{ keyr }}" style="min-width: 472px;"><h4 style="text-align: center;">{{ roomt[keyr] }}<hr></h4><div class="graph" style="min-height:280px;"></div></div>');
+                }
+                $.plot($('#roomtypesreport').children('.unit_{{ key }}').children('.content').children('.room_{{ keyr }}').children('.graph'), rooms['{{ keyr }}'],
             		{
             			series: {
             					pie: {
@@ -66,37 +69,11 @@ $().ready(function(){
             				show: false
             			}
             		});
-            function pieHover_{{key}}_{{ keyr }}(event, pos, obj)
-    		{
-    			if (!obj)
-    					return;
-    			percent = parseFloat(obj.series.percent).toFixed(2);
-    			$("#hover").html('<span style="font-weight: bold; color: '+obj.series.color+'">'+obj.series.label+' ('+percent+'%)</span>');
-    		}
-            $('#roomtypesreport').children('.unit_{{ key }}').children('.content').children('.room_{{ keyr }}').children('.graph').bind("plothover", pieHover_{{key}}_{{ keyr }});
-        {% endfor %}
-        
-        
-	{% endfor %}
-
-	/*var stack = 0, bars = true, lines = false, steps = false;
-	$.plot($("#unitsreport"), [ unitstotal, unitsbusy ], {
-		series: {
-			stack: stack,
-			lines: { show: lines, fill: true, steps: steps },
-			bars: { show: bars, barWidth: 0.6 }
-		},
-		xaxis: {
-            axisLabel: 'foo',
-            axisLabelUseCanvas: true,
-            axisLabelFontSizePixels: 20,
-            axisLabelFontFamily: 'Arial'
-        },
-        yaxis: {
-            axisLabel: 'bar',
-            axisLabelUseCanvas: true
-        }
-	});*/
+            {% endfor %}
+    	{% endfor %}
+	}
+	$('#roomtypesreport').resize($.wait(paint_gauges,2));
+	paint_gauges();
 });
 </script>
 {% endblock %}

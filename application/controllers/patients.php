@@ -48,6 +48,9 @@ class Patients extends MY_Controller {
         
         $this->twig->display('hospital/patientstatus',array('patientid'=>$patientid));
     }
+    function pharmacy(){
+        $this->twig->display('hospital/patientstatus');
+    }
     function diet(){
         $this->twig->display('hospital/patientstatus',array('nopayinfo'=>true,'nomodify'=>true,'justhospitalized'=>true));
     }
@@ -159,9 +162,11 @@ class Patients extends MY_Controller {
         $patientinfo=$this->Patient->loadpatient($patientid);
         $currentatention=$this->Patient->currentAtention($patientid);
         $asigned=false;
+        $othdoctor=false;
         if($asign){
             if($currentatention->doctor>0){
                 $atend=false;
+                $othdoctor=true;
             }else{
                 $atend=$this->Patient->asignDoctor($currentatention->atentionid,$this->session->userdata('user_id'));
                 $asigned=true;
@@ -170,7 +175,7 @@ class Patients extends MY_Controller {
             $atend=true;
         }
         
-        echo json_encode(array('ok'=>$atend,'prev'=>$asigned,'basicinfo'=>$patientinfo,'atentioninfo'=>$currentatention));
+        echo json_encode(array('ok'=>$atend,'prev'=>$asigned,'asigned'=>$othdoctor,'basicinfo'=>$patientinfo,'atentioninfo'=>$currentatention));
     }
     function diagnosepatient(){
         if(!$this->input->is_ajax_request()) redirect();
